@@ -7,9 +7,9 @@ import se.liu.ida.tdp024.account.util.http.HTTPHelperImpl;
 public class AccountLoggerMonlog implements AccountLogger {
 
     private static final HTTPHelper httpHelper = new HTTPHelperImpl();
-    
+
     //-- Set your API key here ----------//
-    private static final String apikey = "";
+    private static final String apikey = "4c938a78d76a0c5559ecd32e2cedf69ab913cf92";
     //-----------------------------------//
     private static final String endpoint = "http://www.ida.liu.se/~TDP024/monlog/api/log/";
 

@@ -7,9 +7,15 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import se.liu.ida.tdp024.account.data.api.entity.Account;
 import se.liu.ida.tdp024.account.data.impl.db.facade.AccountEntityFacadeDB;
+import se.liu.ida.tdp024.account.logic.api.facade.AccountLogicFacade;
+import se.liu.ida.tdp024.account.logic.impl.facade.AccountLogicFacadeImpl;
+import se.liu.ida.tdp024.account.data.api.exception.AccountInputParameterException;
 
 @Path("account")
 public class AccountService {
+    
+    private final AccountLogicFacade accountLogicFacade = 
+            new AccountLogicFacadeImpl(new AccountEntityFacadeDB());
 
     @GET
     @Path("/")
@@ -24,39 +30,46 @@ public class AccountService {
     @QueryParam("accounttype") String accounttype,
     @QueryParam("name") String name,
     @QueryParam("bank") String bank
-            ) {
-        return Response.ok().entity("accounttype is "
-        + accounttype
-        + "\r\n name is"
-        + name
-        + "\r\n bank is"
-        + bank).build();
+    ) {
+        try {
+             accountLogicFacade.create(accounttype, name, bank);
+        return Response.ok().entity("OK").build();
+        } catch (AccountInputParameterException e) {
+        return Response.ok().entity("FAILED").build();
+        }
+       
     }    
     @GET
     @Path("/find/{name : [\\w(%20)]+}")
-    public Response find( @PathParam("name") String name)
-    {
+    public Response find(
+            @PathParam("name") String name
+    ) {
         return Response.ok().entity("Hello " + name).build();
     }    
     @GET
     @Path("/credit")
-    public Response credit( )
-    {
+    public Response credit(
+            @QueryParam("id") int id,
+            @QueryParam("amount") int amount
+    ) {
         return Response.ok().entity("Hello World!").build();
     }
     
     @GET
     @Path("/debit")
-    public Response debit( )
-    {
+    public Response debit( 
+            @QueryParam("id") int id,
+            @QueryParam("amount") int amount    
+    ) {
         return Response.ok().entity("Hello World!").build();
     }
     
     @GET
     @Path("/transactions")
-    public Response transactions( )
-    {
+    public Response transactions(
+            @QueryParam("id") int id
+    ) {
         return Response.ok().entity("Hello World!").build();
-    }    
+    }
     
 }

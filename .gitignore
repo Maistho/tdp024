@@ -10,15 +10,10 @@
 /account-rest/build/
 /account-logic-impl/build/
 /account-logic-impl/dist/
-nbproject/private
+nbproject/private/
 build/
 nbbuild/
 dist/
 nbdist/
 nbactions.xml
 nb-configuration.xml
-
-nbproject/
-
-!nbproject/project.properties
-!nbproject/project.xml

@@ -1,6 +1,8 @@
 package se.liu.ida.tdp024.account.data.impl.db.facade;
 
+import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import se.liu.ida.tdp024.account.data.api.facade.AccountEntityFacade;
 import se.liu.ida.tdp024.account.data.api.exception.AccountInputParameterException;
 import se.liu.ida.tdp024.account.data.impl.db.util.EMF;
@@ -32,9 +34,25 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
             account.setName(name);
             account.setBank(bank);
             
+            em.persist(account);
+            em.getTransaction().commit();
+            em.close();
+            
         } catch (Exception e) {
             
         }
+    }
+
+    @Override
+    public List<Account> findAllByName(String key) {
+         
+        EntityManager em = EMF.getEntityManager();
+        List<Account> results = em.createQuery("SELECT a FROM AccountDB a WHERE a.name = ?1")
+                .setParameter(1, key).getResultList();
+
+        em.close();
+        return results;
+
     }
     
 }

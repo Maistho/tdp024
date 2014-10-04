@@ -44,6 +44,7 @@ public class AccountService {
     public Response find(
             @PathParam("name") String name
     ) {
+        name = accountLogicFacade.find(name);
         return Response.ok().entity("Hello " + name).build();
     }    
     @GET

@@ -7,4 +7,6 @@ public interface AccountLogicFacade {
     public void create(String accounttype, String name, String bank)
         throws
         AccountInputParameterException;
+    
+    public String find(String name);
 }

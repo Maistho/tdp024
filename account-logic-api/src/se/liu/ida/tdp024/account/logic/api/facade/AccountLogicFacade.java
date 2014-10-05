@@ -1,12 +1,19 @@
 package se.liu.ida.tdp024.account.logic.api.facade;
 
-import se.liu.ida.tdp024.account.data.api.exception.AccountInputParameterException;
 
 public interface AccountLogicFacade {
     
-    public void create(String accounttype, String name, String bank)
-        throws
-        AccountInputParameterException;
+    public class AccountLogicFacadeIllegalArgumentException extends Exception {
+        public AccountLogicFacadeIllegalArgumentException(String message) {
+            super(message);
+        }
+    }
     
-    public String find(String name);
+    public void create(String accounttype, String name, String bank)
+            throws 
+            AccountLogicFacadeIllegalArgumentException;
+    
+    public String find(String name)
+            throws 
+            AccountLogicFacadeIllegalArgumentException;
 }

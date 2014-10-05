@@ -2,7 +2,7 @@ package se.liu.ida.tdp024.account.util.logger;
 
 public interface AccountLogger {
     
-    enum TodoLoggerLevel {
+    enum AccountLoggerLevel {
         DEBUG,
         INFO,
         NOTIFY,
@@ -15,6 +15,6 @@ public interface AccountLogger {
     
     public void log(Throwable throwable);
     
-    public void log(TodoLoggerLevel todoLoggerLevel, String shortMessage, String longMessage);
+    public void log(AccountLoggerLevel todoLoggerLevel, String shortMessage, String longMessage);
     
 }

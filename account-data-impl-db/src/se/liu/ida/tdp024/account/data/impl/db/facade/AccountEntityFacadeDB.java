@@ -15,21 +15,6 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
             throws
             AccountEntityFacadeIllegalArgumentException
     {
-        if (accounttype == null || accounttype.trim().equals("")) {
-            //TODO: log
-            throw new AccountEntityFacadeIllegalArgumentException("Account type cannot be empty");
-        }
-        
-        if (name == null || name.trim().equals("")) {
-            //TODO: log
-            throw new AccountEntityFacadeIllegalArgumentException("Name cannot be empty");
-        }
-        
-        if (bank == null || bank.trim().equals("")) {
-            //TODO: log
-            throw new AccountEntityFacadeIllegalArgumentException("Bank cannot be empty");
-        }
-        
         
         EntityManager em = EMF.getEntityManager();
         em.getTransaction().begin();

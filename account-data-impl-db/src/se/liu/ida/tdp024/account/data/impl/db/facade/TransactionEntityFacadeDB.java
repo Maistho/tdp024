@@ -20,8 +20,10 @@ import se.liu.ida.tdp024.account.data.impl.db.util.EMF;
 public class TransactionEntityFacadeDB implements TransactionEntityFacade{
 
     private void createTransaction(long account, long amount, FinalConstants.TransactionTypes transactionType) {          
+        
+        //TODO: Validate account, amount, transactiontype
+        
         EntityManager em = EMF.getEntityManager();
-
         em.getTransaction().begin();
 
         Transaction transaction = new TransactionDB();

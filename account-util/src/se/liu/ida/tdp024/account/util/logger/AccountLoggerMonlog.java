@@ -37,7 +37,7 @@ public class AccountLoggerMonlog implements AccountLogger {
     }
 
     @Override
-    public void log(TodoLoggerLevel todoLoggerLevel, String shortMessage, String longMessage) {
+    public void log(AccountLoggerLevel todoLoggerLevel, String shortMessage, String longMessage) {
 
             try {
             httpHelper.postJSON(

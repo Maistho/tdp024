@@ -5,9 +5,7 @@
  */
 package se.liu.ida.tdp024.account.logic.impl.facade;
 
-import org.apache.derby.iapi.store.raw.Transaction;
 import se.liu.ida.tdp024.account.data.api.facade.TransactionEntityFacade;
-import se.liu.ida.tdp024.account.data.impl.db.facade.TransactionEntityFacadeDB;
 import se.liu.ida.tdp024.account.logic.api.facade.TransactionLogicFacade;
 import se.liu.ida.tdp024.account.util.json.AccountJsonSerializer;
 import se.liu.ida.tdp024.account.util.json.AccountJsonSerializerImpl;

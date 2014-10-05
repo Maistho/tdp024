@@ -15,9 +15,11 @@ public class TransactionDB  implements Transaction{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     
+    //TODO: should account be of type Account?
     private long account;
     private long amount;
     private FinalConstants.TransactionTypes transactionType;
+    
     @Override
     public long getId() {
         return id;

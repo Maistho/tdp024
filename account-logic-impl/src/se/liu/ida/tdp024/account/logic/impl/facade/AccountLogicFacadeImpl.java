@@ -5,7 +5,7 @@ import se.liu.ida.tdp024.account.data.api.entity.Account;
 import se.liu.ida.tdp024.account.data.api.facade.AccountEntityFacade;
 import se.liu.ida.tdp024.account.logic.api.facade.AccountLogicFacade;
 import se.liu.ida.tdp024.account.data.api.exception.AccountInputParameterException;
-import se.liu.ida.tdp024.account.data.impl.db.facade.AccountEntityFacadeDB;
+import se.liu.ida.tdp024.account.data.api.facade.AccountEntityFacade.AccountEntityFacadeIllegalArgumentException;
 import se.liu.ida.tdp024.account.util.json.AccountJsonSerializer;
 import se.liu.ida.tdp024.account.util.json.AccountJsonSerializerImpl;
 import se.liu.ida.tdp024.account.util.http.HTTPHelper;
@@ -43,10 +43,11 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
             String bankKey = jsonSerializer.fromJson(
                     http.get(FinalConstants.BANK_ENDPOINT+"find.name", "name", bank),
                     PersonDTO.class).getKey();
+            
             accountEntityFacade.create(accounttype, personKey, bankKey);
         } catch (HTTPException e) {
             //TODO: log, throw new exception
-        } catch (AccountInputParameterException e) {
+        } catch (AccountEntityFacadeIllegalArgumentException e) {
             //TODO: log, throw new exception
         }
     }

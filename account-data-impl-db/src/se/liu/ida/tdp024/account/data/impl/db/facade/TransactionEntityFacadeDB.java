@@ -7,7 +7,6 @@ package se.liu.ida.tdp024.account.data.impl.db.facade;
 
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.print.attribute.standard.Finishings;
 import se.liu.ida.tdp024.account.data.api.entity.Transaction;
 import se.liu.ida.tdp024.account.data.api.facade.TransactionEntityFacade;
 import se.liu.ida.tdp024.account.data.api.util.FinalConstants;
@@ -20,26 +19,20 @@ import se.liu.ida.tdp024.account.data.impl.db.util.EMF;
  */
 public class TransactionEntityFacadeDB implements TransactionEntityFacade{
 
-    private void createTransaction(long account, long amount, FinalConstants.TransactionTypes transactionType) {
-                    
+    private void createTransaction(long account, long amount, FinalConstants.TransactionTypes transactionType) {          
         EntityManager em = EMF.getEntityManager();
-        
-        try {
-            em.getTransaction().begin();
-            
-            Transaction transaction = new TransactionDB();
-            transaction.setAccount(account);
-            transaction.setAmount(amount);
-            transaction.setTransactionType(transactionType);
-            
-            em.persist(transaction);
-            em.getTransaction().commit();
-            em.close();
-            
-        } catch (Exception e) {
-            
-        }
-}
+
+        em.getTransaction().begin();
+
+        Transaction transaction = new TransactionDB();
+        transaction.setAccount(account);
+        transaction.setAmount(amount);
+        transaction.setTransactionType(transactionType);
+
+        em.persist(transaction);
+        em.getTransaction().commit();
+        em.close();
+    }   
     
     @Override
     public void debit(long account, long amount) {

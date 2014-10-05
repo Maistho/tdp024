@@ -2,9 +2,7 @@ package se.liu.ida.tdp024.account.data.impl.db.facade;
 
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import se.liu.ida.tdp024.account.data.api.facade.AccountEntityFacade;
-import se.liu.ida.tdp024.account.data.api.exception.AccountInputParameterException;
 import se.liu.ida.tdp024.account.data.impl.db.util.EMF;
 import se.liu.ida.tdp024.account.data.api.entity.Account;
 import se.liu.ida.tdp024.account.data.api.util.FinalConstants;
@@ -15,33 +13,41 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
     @Override
     public void create(String accounttype, String name, String bank)
             throws
-            AccountInputParameterException
+            AccountEntityFacadeIllegalArgumentException
     {
-        
-        if (accounttype == null || name == null || bank == null
-                || accounttype.trim().equals("") || name.trim().equals("")
-                || bank.trim().equals("")
-                ) {
-            throw new AccountInputParameterException("Somethings null or empty");
+        if (accounttype == null || accounttype.trim().equals("")) {
+            //TODO: log
+            throw new AccountEntityFacadeIllegalArgumentException("Account type cannot be empty");
         }
         
+        if (name == null || name.trim().equals("")) {
+            //TODO: log
+            throw new AccountEntityFacadeIllegalArgumentException("Name cannot be empty");
+        }
+        
+        if (bank == null || bank.trim().equals("")) {
+            //TODO: log
+            throw new AccountEntityFacadeIllegalArgumentException("Bank cannot be empty");
+        }
+        
+        
         EntityManager em = EMF.getEntityManager();
+        em.getTransaction().begin();
+        
         try {
             FinalConstants.AccountTypes accountEnum = FinalConstants.AccountTypes.valueOf(accounttype);
-
-            em.getTransaction().begin();
-            
             Account account = new AccountDB();
             account.setAccounttype(accountEnum);
             account.setName(name);
             account.setBank(bank);
-            
             em.persist(account);
-            em.getTransaction().commit();
-            em.close();
         } catch (IllegalArgumentException e) {
-            throw new AccountInputParameterException("No such accounttype!");
+            //TODO: log
+            throw new AccountEntityFacadeIllegalArgumentException("No such account type");
         }
+
+        em.getTransaction().commit();
+        em.close();
     }
 
     @Override

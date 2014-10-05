@@ -1,7 +1,5 @@
 package se.liu.ida.tdp024.account.data.impl.db.entity;
 
-import java.io.Serializable;
-import se.liu.ida.tdp024.account.data.api.entity.Account;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
@@ -10,7 +8,7 @@ import se.liu.ida.tdp024.account.data.api.entity.Transaction;
 import se.liu.ida.tdp024.account.data.api.util.FinalConstants;
 
 @Entity
-public class TransactionDB  implements Transaction{
+public class TransactionDB implements Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

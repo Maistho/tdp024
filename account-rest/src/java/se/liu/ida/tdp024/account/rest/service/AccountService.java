@@ -44,7 +44,6 @@ public class AccountService {
     ) 
     {
         logger.log(AccountLogger.AccountLoggerLevel.DEBUG, "Access /create", "Requested '/create'");
-        System.err.println("output" + accounttype);
         
         if (accounttype == null) { // || name == null || bank == null) {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Access /create",
@@ -113,16 +112,8 @@ public class AccountService {
     {
         logger.log(AccountLogger.AccountLoggerLevel.DEBUG, "Access /credit", "Requested '/credit'");
         
-        System.out.println(id);
-        
-        try {
-            transactionLogicFacade.credit(id, amount);
-            return Response.ok().entity("OK").build();
-        } catch (Exception e) {
-            //todo: catch more exceptions
-            logger.log(AccountLogger.AccountLoggerLevel.DEBUG, "Failed credit", String.format("id: %d\namount: %d\nException message: %s\nStacktrace:\n", id, amount, e.getMessage(), e.getStackTrace().toString()));
-            return Response.ok().entity("FAILED").build(); //TODO: change returne
-        }
+        transactionLogicFacade.credit(id, amount);
+        return Response.ok().entity("OK").build(); 
     }
     
     @GET
@@ -133,14 +124,9 @@ public class AccountService {
     ) 
     {
         logger.log(AccountLogger.AccountLoggerLevel.DEBUG, "Access /debit", "Requested '/debit'");
-        try {
-            transactionLogicFacade.debit(id, amount);
-            return Response.ok().entity("OK").build();
-        } catch (Exception e) {
-            //TODO: catch more exceptions
-            logger.log(AccountLogger.AccountLoggerLevel.DEBUG, "Failed credit", String.format("id: %d\namount: %d\nException message: %s\nStacktrace:\n", id, amount, e.getMessage(), e.getStackTrace().toString()));
-            return Response.ok().entity("FAILED").build();
-        }
+
+        transactionLogicFacade.debit(id, amount);
+        return Response.ok().entity("OK").build();
     }
     
     @GET

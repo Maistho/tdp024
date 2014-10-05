@@ -23,10 +23,7 @@ public class TransactionEntityFacadeDB implements TransactionEntityFacade{
         
         //TODO: Validate account, amount, transactiontype
         
-        
-        
         EntityManager em = EMF.getEntityManager();
-
         em.getTransaction().begin();
 
         Transaction transaction = new TransactionDB();

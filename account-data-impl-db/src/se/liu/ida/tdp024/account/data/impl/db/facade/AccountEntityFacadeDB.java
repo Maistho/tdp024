@@ -16,8 +16,6 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
             AccountEntityFacadeIllegalArgumentException
     {
         
-        
-        
         EntityManager em = EMF.getEntityManager();
         em.getTransaction().begin();
         

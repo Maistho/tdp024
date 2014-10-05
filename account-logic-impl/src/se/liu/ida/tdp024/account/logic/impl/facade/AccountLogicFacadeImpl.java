@@ -8,11 +8,16 @@ import se.liu.ida.tdp024.account.data.api.exception.AccountInputParameterExcepti
 import se.liu.ida.tdp024.account.data.impl.db.facade.AccountEntityFacadeDB;
 import se.liu.ida.tdp024.account.util.json.AccountJsonSerializer;
 import se.liu.ida.tdp024.account.util.json.AccountJsonSerializerImpl;
+import se.liu.ida.tdp024.account.util.http.HTTPHelper;
+import se.liu.ida.tdp024.account.util.http.HTTPHelperImpl;
+import se.liu.ida.tdp024.account.logic.api.util.FinalConstants;
+import se.liu.ida.tdp024.account.logic.api.util.PersonDTO;
 
 public class AccountLogicFacadeImpl implements AccountLogicFacade {
     
     private AccountEntityFacade accountEntityFacade = new AccountEntityFacadeDB();
     private AccountJsonSerializer jsonSerializer = new AccountJsonSerializerImpl();
+    private HTTPHelper http = new HTTPHelperImpl();
     
     public AccountLogicFacadeImpl(AccountEntityFacade accountEntityFacade) {
         this.accountEntityFacade = accountEntityFacade;
@@ -27,17 +32,30 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
             throws
             AccountInputParameterException
     {
-        try {
-            accountEntityFacade.create(accounttype, name, bank);
+        String personKey = jsonSerializer.fromJson(
+                http.get(FinalConstants.PERSON_ENDPOINT+"find.name", "name", name),
+                PersonDTO.class).getKey();
+        String bankKey = jsonSerializer.fromJson(
+                http.get(FinalConstants.BANK_ENDPOINT+"find.name", "name", bank),
+                PersonDTO.class).getKey();
+        
+        
+        
+        try {            
+            accountEntityFacade.create(accounttype, personKey, bankKey);
         } catch (AccountInputParameterException e) {
             throw e;
         }
+
     }
 
     @Override
     public String find(String name) {
-        List<Account> results = accountEntityFacade.findAllByName(name);
-        return "list is :" + jsonSerializer.toJson(results) + " and has length: " + results.size();
+        String personKey = jsonSerializer.fromJson(
+                http.get(FinalConstants.PERSON_ENDPOINT+"find.name", "name", name),
+                PersonDTO.class).getKey();
+        List<Account> results = accountEntityFacade.findAllByName(personKey);
+        return jsonSerializer.toJson(results);
     }
     
 }

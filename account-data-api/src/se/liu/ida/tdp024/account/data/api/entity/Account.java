@@ -1,12 +1,15 @@
 package se.liu.ida.tdp024.account.data.api.entity;
 
 import java.io.Serializable;
+import se.liu.ida.tdp024.account.data.api.util.FinalConstants;
 
 public interface Account extends Serializable {
     
-    public String getAccounttype();
+    public long getId();
     
-    public void setAccounttype(String accounttype);
+    public FinalConstants.AccountTypes getAccounttype();
+    
+    public void setAccounttype(FinalConstants.AccountTypes accounttype);
     
     public String getName();
     public void setName(String name);

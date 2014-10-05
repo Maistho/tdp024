@@ -7,6 +7,7 @@ import se.liu.ida.tdp024.account.data.api.facade.AccountEntityFacade;
 import se.liu.ida.tdp024.account.data.api.exception.AccountInputParameterException;
 import se.liu.ida.tdp024.account.data.impl.db.util.EMF;
 import se.liu.ida.tdp024.account.data.api.entity.Account;
+import se.liu.ida.tdp024.account.data.api.util.FinalConstants;
 import se.liu.ida.tdp024.account.data.impl.db.entity.AccountDB;
 
 public class AccountEntityFacadeDB implements AccountEntityFacade {
@@ -21,25 +22,25 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
                 || accounttype.trim().equals("") || name.trim().equals("")
                 || bank.trim().equals("")
                 ) {
-            throw new AccountInputParameterException("Somethings null");
+            throw new AccountInputParameterException("Somethings null or empty");
         }
         
         EntityManager em = EMF.getEntityManager();
-        
         try {
+            FinalConstants.AccountTypes accountEnum = FinalConstants.AccountTypes.valueOf(accounttype);
+
             em.getTransaction().begin();
             
             Account account = new AccountDB();
-            account.setAccounttype(accounttype);
+            account.setAccounttype(accountEnum);
             account.setName(name);
             account.setBank(bank);
             
             em.persist(account);
             em.getTransaction().commit();
             em.close();
-            
-        } catch (Exception e) {
-            
+        } catch (IllegalArgumentException e) {
+            throw new AccountInputParameterException("No such accounttype!");
         }
     }
 

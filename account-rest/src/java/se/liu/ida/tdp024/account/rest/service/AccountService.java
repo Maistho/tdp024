@@ -10,12 +10,17 @@ import se.liu.ida.tdp024.account.data.impl.db.facade.AccountEntityFacadeDB;
 import se.liu.ida.tdp024.account.logic.api.facade.AccountLogicFacade;
 import se.liu.ida.tdp024.account.logic.impl.facade.AccountLogicFacadeImpl;
 import se.liu.ida.tdp024.account.data.api.exception.AccountInputParameterException;
+import se.liu.ida.tdp024.account.data.impl.db.facade.TransactionEntityFacadeDB;
+import se.liu.ida.tdp024.account.logic.api.facade.TransactionLogicFacade;
+import se.liu.ida.tdp024.account.logic.impl.facade.TransactionLogicFacadeImpl;
 
 @Path("account")
 public class AccountService {
     
     private final AccountLogicFacade accountLogicFacade = 
             new AccountLogicFacadeImpl(new AccountEntityFacadeDB());
+    private final TransactionLogicFacade transactionLogicFacade = 
+            new TransactionLogicFacadeImpl(new TransactionEntityFacadeDB());
 
     @GET
     @Path("/")
@@ -44,33 +49,45 @@ public class AccountService {
     public Response find(
             @PathParam("name") String name
     ) {
-        name = accountLogicFacade.find(name);
-        return Response.ok().entity("Hello " + name).build();
-    }    
+        String accounts = accountLogicFacade.find(name);
+        return Response.ok().entity(accounts).build();
+    }
+    
     @GET
     @Path("/credit")
     public Response credit(
-            @QueryParam("id") int id,
-            @QueryParam("amount") int amount
+            @QueryParam("id") long id,
+            @QueryParam("amount") long amount
     ) {
-        return Response.ok().entity("Hello World!").build();
+        try {
+            transactionLogicFacade.credit(id, amount);
+            return Response.ok().entity("OK").build();
+        } catch (Exception e) {
+            return Response.ok().entity("FAILED").build();
+        }
     }
     
     @GET
     @Path("/debit")
     public Response debit( 
-            @QueryParam("id") int id,
-            @QueryParam("amount") int amount    
+            @QueryParam("id") long id,
+            @QueryParam("amount") long amount    
     ) {
-        return Response.ok().entity("Hello World!").build();
+        try {
+            transactionLogicFacade.debit(id, amount);
+            return Response.ok().entity("OK").build();
+        } catch (Exception e) {
+            return Response.ok().entity("FAILED").build();
+        }
     }
     
     @GET
     @Path("/transactions")
     public Response transactions(
-            @QueryParam("id") int id
+            @QueryParam("id") long id
     ) {
-        return Response.ok().entity("Hello World!").build();
+            String response = transactionLogicFacade.findAllFromAccount(id);
+            return Response.ok().entity(response).build();
     }
     
 }

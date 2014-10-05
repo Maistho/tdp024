@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/home/maistho/prog/tdp024/account-data-api/src/se/liu/ida/tdp024/account/data/api/facade/AccountEntityFacade.java</file>
+            <file>file:/home/maistho/prog/tdp024/account-data-api/src/se/liu/ida/tdp024/account/data/api/entity/Account.java</file>
+            <file>file:/home/maistho/prog/tdp024/account-data-api/src/se/liu/ida/tdp024/account/data/api/facade/TransactionEntityFacade.java</file>
+            <file>file:/home/maistho/prog/tdp024/account-data-api/src/se/liu/ida/tdp024/account/data/api/util/StorageFacade.java</file>
+            <file>file:/home/maistho/prog/tdp024/account-data-api/src/se/liu/ida/tdp024/account/data/api/entity/Transaction.java</file>
+            <file>file:/home/maistho/prog/tdp024/account-data-api/src/se/liu/ida/tdp024/account/data/api/util/FinalConstants.java</file>
+        </group>
+    </open-files>
 </project-private>

@@ -3,23 +3,27 @@ package se.liu.ida.tdp024.account.data.impl.db.entity;
 import se.liu.ida.tdp024.account.data.api.entity.Account;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import se.liu.ida.tdp024.account.data.api.util.FinalConstants;
 
 @Entity
 public class AccountDB implements Account {
     
     @Id
-    private String name;
-    @Id
-    private String bank;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
     
-    private String accounttype;
+    private String name;
+    private String bank;
+    private FinalConstants.AccountTypes accounttype;
     
     @Override
-    public String getAccounttype() {
+    public FinalConstants.AccountTypes getAccounttype() {
         return accounttype;
     }
     @Override
-    public void setAccounttype(String accounttype) {
+    public void setAccounttype(FinalConstants.AccountTypes accounttype) {
         this.accounttype = accounttype;
     }
     @Override
@@ -37,6 +41,11 @@ public class AccountDB implements Account {
     @Override
     public void setBank(String bank) {
         this.bank = bank;
+    }
+    
+    @Override
+    public long getId() {
+        return id;
     }
     
 }

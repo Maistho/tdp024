@@ -17,7 +17,9 @@ public class HTTPHelperImpl implements HTTPHelper {
     private AccountLogger accountLogger = new AccountLoggerImpl();
 
     @Override
-    public String get(String endpoint, String... parameters) {
+    public String get(String endpoint, String... parameters)
+    throws HTTPException
+    {
 
         String urlToRead = createURL(endpoint, parameters);
 
@@ -26,6 +28,7 @@ public class HTTPHelperImpl implements HTTPHelper {
         BufferedReader rd;
         String line;
         String result = "";
+        
         try {
             url = new URL(urlToRead);
             conn = (HttpURLConnection) url.openConnection();
@@ -35,9 +38,14 @@ public class HTTPHelperImpl implements HTTPHelper {
                 result += line;
             }
             rd.close();
-        } catch (Exception e) {
+        } catch (MalformedURLException e) {
             accountLogger.log(e);
+            throw new HTTPException("Malformed URL");
+        } catch (IOException e) {
+            accountLogger.log(e);
+            throw new HTTPException("Error reading data");
         }
+        
         return result;
 
     }

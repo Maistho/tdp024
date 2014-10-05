@@ -2,6 +2,7 @@ package se.liu.ida.tdp024.account.util.logger;
 
 import java.util.Date;
 import se.liu.ida.tdp024.account.util.http.HTTPHelper;
+import se.liu.ida.tdp024.account.util.http.HTTPHelper.HTTPException;
 import se.liu.ida.tdp024.account.util.http.HTTPHelperImpl;
 
 public class AccountLoggerMonlog implements AccountLogger {
@@ -20,29 +21,35 @@ public class AccountLoggerMonlog implements AccountLogger {
         for (StackTraceElement ste : throwable.getStackTrace()) {
             stackTrace.append(ste.toString()).append("\n");
         }
-
-        httpHelper.postJSON(
-                endpoint,
-                new String[]{"api_key", apikey, "format", "json"},
-                new String[]{
-            "severity", "5",
-            "short_desc", throwable.getMessage(),
-            "long_desc", stackTrace.toString(),
-            "timestamp", new Date().getTime() + ""});
-
+        
+        try {
+            httpHelper.postJSON(
+                    endpoint,
+                    new String[]{"api_key", apikey, "format", "json"},
+                    new String[]{
+                "severity", "5",
+                "short_desc", throwable.getMessage(),
+                "long_desc", stackTrace.toString(),
+                "timestamp", new Date().getTime() + ""});
+        } catch (HTTPException e) {
+            
+        }
     }
 
     @Override
     public void log(TodoLoggerLevel todoLoggerLevel, String shortMessage, String longMessage) {
 
-        httpHelper.postJSON(
-                endpoint,
-                new String[]{"api_key", apikey, "format", "json"},
-                new String[]{
-            "severity", todoLoggerLevel.ordinal() + "",
-            "short_desc", shortMessage,
-            "long_desc", longMessage,
-            "timestamp", new Date().getTime() + ""});
-
+            try {
+            httpHelper.postJSON(
+                    endpoint,
+                    new String[]{"api_key", apikey, "format", "json"},
+                    new String[]{
+                "severity", todoLoggerLevel.ordinal() + "",
+                "short_desc", shortMessage,
+                "long_desc", longMessage,
+                "timestamp", new Date().getTime() + ""});
+            } catch (HTTPException e) {
+                
+            }
     }
 }

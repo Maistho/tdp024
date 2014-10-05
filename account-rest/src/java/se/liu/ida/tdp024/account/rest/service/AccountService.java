@@ -13,6 +13,8 @@ import se.liu.ida.tdp024.account.data.api.exception.AccountInputParameterExcepti
 import se.liu.ida.tdp024.account.data.impl.db.facade.TransactionEntityFacadeDB;
 import se.liu.ida.tdp024.account.logic.api.facade.TransactionLogicFacade;
 import se.liu.ida.tdp024.account.logic.impl.facade.TransactionLogicFacadeImpl;
+import se.liu.ida.tdp024.account.util.logger.AccountLogger;
+import se.liu.ida.tdp024.account.util.logger.AccountLoggerMonlog;
 
 @Path("account")
 public class AccountService {
@@ -21,11 +23,14 @@ public class AccountService {
             new AccountLogicFacadeImpl(new AccountEntityFacadeDB());
     private final TransactionLogicFacade transactionLogicFacade = 
             new TransactionLogicFacadeImpl(new TransactionEntityFacadeDB());
+    private final AccountLogger logger = 
+            new AccountLoggerMonlog();
 
     @GET
     @Path("/")
     public Response root( )
     {
+        logger.log(AccountLogger.TodoLoggerLevel.DEBUG, "Access /", "Requested '/'");
         return Response.ok().entity("Hello World!").build();
     }
   
@@ -36,10 +41,12 @@ public class AccountService {
     @QueryParam("name") String name,
     @QueryParam("bank") String bank
     ) {
+        logger.log(AccountLogger.TodoLoggerLevel.DEBUG, "Access /create", "Requested '/create'");
         try {
-             accountLogicFacade.create(accounttype, name, bank);
-        return Response.ok().entity("OK").build();
+            accountLogicFacade.create(accounttype, name, bank);
+            return Response.ok().entity("OK").build();
         } catch (AccountInputParameterException e) {
+        logger.log(AccountLogger.TodoLoggerLevel.WARNING, "Failed creating account", e.getMessage());
         return Response.ok().entity("FAILED").build();
         }
        
@@ -49,6 +56,7 @@ public class AccountService {
     public Response find(
             @PathParam("name") String name
     ) {
+        logger.log(AccountLogger.TodoLoggerLevel.DEBUG, "Access /find", "Requested /find/" + name);
         String accounts = accountLogicFacade.find(name);
         return Response.ok().entity(accounts).build();
     }
@@ -59,10 +67,13 @@ public class AccountService {
             @QueryParam("id") long id,
             @QueryParam("amount") long amount
     ) {
+        logger.log(AccountLogger.TodoLoggerLevel.DEBUG, "Access /credit", "Requested '/credit'");
         try {
             transactionLogicFacade.credit(id, amount);
             return Response.ok().entity("OK").build();
         } catch (Exception e) {
+            //todo: catch more exceptions
+            logger.log(AccountLogger.TodoLoggerLevel.DEBUG, "Failed credit", String.format("id: %d\namount: %d\nException message: %s\nStacktrace:\n", id, amount, e.getMessage(), e.getStackTrace().toString()));
             return Response.ok().entity("FAILED").build();
         }
     }
@@ -73,10 +84,13 @@ public class AccountService {
             @QueryParam("id") long id,
             @QueryParam("amount") long amount    
     ) {
+        logger.log(AccountLogger.TodoLoggerLevel.DEBUG, "Access /debit", "Requested '/debit'");
         try {
             transactionLogicFacade.debit(id, amount);
             return Response.ok().entity("OK").build();
         } catch (Exception e) {
+            //TODO: catch more exceptions
+            logger.log(AccountLogger.TodoLoggerLevel.DEBUG, "Failed credit", String.format("id: %d\namount: %d\nException message: %s\nStacktrace:\n", id, amount, e.getMessage(), e.getStackTrace().toString()));
             return Response.ok().entity("FAILED").build();
         }
     }
@@ -86,8 +100,9 @@ public class AccountService {
     public Response transactions(
             @QueryParam("id") long id
     ) {
-            String response = transactionLogicFacade.findAllFromAccount(id);
-            return Response.ok().entity(response).build();
+        logger.log(AccountLogger.TodoLoggerLevel.DEBUG, "Access /transactions", "Requested '/transactions'");
+        String response = transactionLogicFacade.findAllFromAccount(id);
+        return Response.ok().entity(response).build();
     }
     
 }

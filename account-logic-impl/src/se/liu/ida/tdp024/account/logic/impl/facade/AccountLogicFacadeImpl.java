@@ -12,10 +12,12 @@ import se.liu.ida.tdp024.account.util.http.HTTPHelper;
 import se.liu.ida.tdp024.account.util.http.HTTPHelperImpl;
 import se.liu.ida.tdp024.account.logic.api.util.FinalConstants;
 import se.liu.ida.tdp024.account.logic.api.util.PersonDTO;
+import se.liu.ida.tdp024.account.util.logger.AccountLogger;
+import se.liu.ida.tdp024.account.util.logger.AccountLoggerMonlog;
 
 public class AccountLogicFacadeImpl implements AccountLogicFacade {
     
-    private AccountEntityFacade accountEntityFacade = new AccountEntityFacadeDB();
+    private AccountEntityFacade accountEntityFacade;
     private AccountJsonSerializer jsonSerializer = new AccountJsonSerializerImpl();
     private HTTPHelper http = new HTTPHelperImpl();
     

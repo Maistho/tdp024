@@ -16,8 +16,8 @@ public class AccountLoggerImpl implements AccountLogger {
     }
 
     @Override
-    public void log(TodoLoggerLevel todoLoggerLevel, String shortMessage, String longMessage) {
-        if (todoLoggerLevel == TodoLoggerLevel.CRITICAL || todoLoggerLevel == TodoLoggerLevel.ERROR) {
+    public void log(AccountLoggerLevel todoLoggerLevel, String shortMessage, String longMessage) {
+        if (todoLoggerLevel == AccountLoggerLevel.CRITICAL || todoLoggerLevel == AccountLoggerLevel.ERROR) {
             System.err.println(shortMessage);
             System.err.println(longMessage);
         } else {

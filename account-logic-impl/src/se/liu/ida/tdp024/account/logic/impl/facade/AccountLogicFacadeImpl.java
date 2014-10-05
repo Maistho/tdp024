@@ -4,7 +4,6 @@ import java.util.List;
 import se.liu.ida.tdp024.account.data.api.entity.Account;
 import se.liu.ida.tdp024.account.data.api.facade.AccountEntityFacade;
 import se.liu.ida.tdp024.account.logic.api.facade.AccountLogicFacade;
-import se.liu.ida.tdp024.account.data.api.exception.AccountInputParameterException;
 import se.liu.ida.tdp024.account.data.api.facade.AccountEntityFacade.AccountEntityFacadeIllegalArgumentException;
 import se.liu.ida.tdp024.account.util.json.AccountJsonSerializer;
 import se.liu.ida.tdp024.account.util.json.AccountJsonSerializerImpl;
@@ -13,8 +12,6 @@ import se.liu.ida.tdp024.account.util.http.HTTPHelperImpl;
 import se.liu.ida.tdp024.account.logic.api.util.FinalConstants;
 import se.liu.ida.tdp024.account.logic.api.util.PersonDTO;
 import se.liu.ida.tdp024.account.util.http.HTTPHelper.HTTPException;
-import se.liu.ida.tdp024.account.util.logger.AccountLogger;
-import se.liu.ida.tdp024.account.util.logger.AccountLoggerMonlog;
 
 
 public class AccountLogicFacadeImpl implements AccountLogicFacade {
@@ -34,7 +31,7 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
             String name,
             String bank)
             throws
-            AccountInputParameterException
+            AccountLogicFacadeIllegalArgumentException
     {
         try {
             String personKey = jsonSerializer.fromJson(
@@ -45,28 +42,38 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
                     PersonDTO.class).getKey();
             
             accountEntityFacade.create(accounttype, personKey, bankKey);
-        } catch (HTTPException e) {
-            //TODO: log, throw new exception
-        } catch (AccountEntityFacadeIllegalArgumentException e) {
-            //TODO: log, throw new exception
+            
+        } 
+        catch (HTTPException e) 
+        {
+            //TODO: log
+            throw new AccountLogicFacadeIllegalArgumentException(e.toString()); //TODO
+        } 
+        catch (AccountEntityFacadeIllegalArgumentException e)
+        {
+            //TODO: log
+            throw new AccountLogicFacadeIllegalArgumentException(e.toString()); //TODO
         }
     }
 
     @Override
-    public String find(String name) {
-        String result = null;
-        
-        try {
+    public String find(String name) 
+            throws 
+            AccountLogicFacadeIllegalArgumentException 
+    {
+        try
+        {
             String personKey = jsonSerializer.fromJson(
                     http.get(FinalConstants.PERSON_ENDPOINT+"find.name", "name", name),
                     PersonDTO.class).getKey();
             List<Account> accounts = accountEntityFacade.findAllByName(personKey);
-            result = jsonSerializer.toJson(accounts);
-        } catch (HTTPException e) {
-            //TODO: log, throw new exception
+            return jsonSerializer.toJson(accounts);
+        } 
+        catch (HTTPException e) 
+        {
+            //TODO: log
+            throw new AccountLogicFacadeIllegalArgumentException(e.toString());
         }
-        
-        return result;
     }
     
 }

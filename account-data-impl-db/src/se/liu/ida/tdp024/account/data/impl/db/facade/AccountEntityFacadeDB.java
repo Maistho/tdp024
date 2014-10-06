@@ -7,28 +7,42 @@ import se.liu.ida.tdp024.account.data.impl.db.util.EMF;
 import se.liu.ida.tdp024.account.data.api.entity.Account;
 import se.liu.ida.tdp024.account.data.api.util.FinalConstants;
 import se.liu.ida.tdp024.account.data.impl.db.entity.AccountDB;
+import se.liu.ida.tdp024.account.util.logger.AccountLogger;
+import se.liu.ida.tdp024.account.util.logger.AccountLoggerMonlog;
 
 public class AccountEntityFacadeDB implements AccountEntityFacade {
+    
+    private AccountLogger logger = new AccountLoggerMonlog();
     
     @Override
     public void create(String accounttype, String name, String bank)
             throws
-            AccountEntityFacadeIllegalArgumentException
+            AccountEntityFacadeIllegalArgumentException,
+            AccountEntityFacadeStorageException
     {
         
         EntityManager em = EMF.getEntityManager();
         em.getTransaction().begin();
         
+        Account account = new AccountDB();
         try {
             FinalConstants.AccountTypes accountEnum = FinalConstants.AccountTypes.valueOf(accounttype);
-            Account account = new AccountDB();
             account.setAccounttype(accountEnum);
-            account.setName(name);
-            account.setBank(bank);
+
+        } catch (IllegalArgumentException e) {
+            logger.log(AccountLogger.AccountLoggerLevel.WARNING, "AccountEntityFacade.create",
+                    String.format("No such accounttype: %s\n%s", accounttype, e.getMessage()));
+            throw new AccountEntityFacadeIllegalArgumentException("No such account type");
+        }
+        
+        account.setName(name);
+        account.setBank(bank);
+        
+        try {
             em.persist(account);
         } catch (IllegalArgumentException e) {
-            //TODO: log
-            throw new AccountEntityFacadeIllegalArgumentException("No such account type");
+            logger.log(e);
+            throw new AccountEntityFacadeStorageException("Error storing account");
         }
 
         em.getTransaction().commit();

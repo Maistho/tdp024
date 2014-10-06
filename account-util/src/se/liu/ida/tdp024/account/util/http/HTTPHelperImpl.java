@@ -18,7 +18,8 @@ public class HTTPHelperImpl implements HTTPHelper {
 
     @Override
     public String get(String endpoint, String... parameters)
-    throws HTTPException
+    throws HTTPHelperConnectionException,
+            HTTPHelperMalformedURLException
     {
 
         String urlToRead = createURL(endpoint, parameters);
@@ -40,10 +41,10 @@ public class HTTPHelperImpl implements HTTPHelper {
             rd.close();
         } catch (MalformedURLException e) {
             accountLogger.log(e);
-            throw new HTTPException("Malformed URL");
+            throw new HTTPHelperConnectionException("Malformed URL");
         } catch (IOException e) {
             accountLogger.log(e);
-            throw new HTTPException("Error reading data");
+            throw new HTTPHelperConnectionException("Error reading data");
         }
         
         return result;

@@ -9,9 +9,24 @@ public interface AccountLogicFacade {
         }
     }
     
+    public class AccountLogicFacadeConnectionException extends Exception {
+        public AccountLogicFacadeConnectionException(String message) {
+            super(message);
+        }
+    }
+    
+    public class AccountLogicFacadeStorageException extends Exception {
+        public AccountLogicFacadeStorageException(String message) {
+            super(message);
+        }
+    }
+    
+    
     public void create(String accounttype, String name, String bank)
             throws 
-            AccountLogicFacadeIllegalArgumentException;
+            AccountLogicFacadeIllegalArgumentException,
+            AccountLogicFacadeConnectionException,
+            AccountLogicFacadeStorageException;
     
     public String find(String name)
             throws 

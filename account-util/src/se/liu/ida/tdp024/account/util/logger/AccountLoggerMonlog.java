@@ -2,7 +2,7 @@ package se.liu.ida.tdp024.account.util.logger;
 
 import java.util.Date;
 import se.liu.ida.tdp024.account.util.http.HTTPHelper;
-import se.liu.ida.tdp024.account.util.http.HTTPHelper.HTTPException;
+import se.liu.ida.tdp024.account.util.http.HTTPHelper.HTTPHelperConnectionException;
 import se.liu.ida.tdp024.account.util.http.HTTPHelperImpl;
 
 public class AccountLoggerMonlog implements AccountLogger {
@@ -31,7 +31,7 @@ public class AccountLoggerMonlog implements AccountLogger {
                 "short_desc", throwable.getMessage(),
                 "long_desc", stackTrace.toString(),
                 "timestamp", new Date().getTime() + ""});
-        } catch (HTTPException e) {
+        } catch (HTTPHelperConnectionException e) {
             
         }
     }
@@ -48,7 +48,7 @@ public class AccountLoggerMonlog implements AccountLogger {
                 "short_desc", shortMessage,
                 "long_desc", longMessage,
                 "timestamp", new Date().getTime() + ""});
-            } catch (HTTPException e) {
+            } catch (HTTPHelperConnectionException e) {
                 
             }
     }

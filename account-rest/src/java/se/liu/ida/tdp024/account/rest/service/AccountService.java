@@ -46,20 +46,20 @@ public class AccountService {
         logger.log(AccountLogger.AccountLoggerLevel.DEBUG, "Access /create", "Requested '/create'");
         
         if (accounttype == null) { // || name == null || bank == null) {
-            logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Access /create",
-                    String.format("Invalid argument accounttype: %s", accounttype));
+            logger.log(AccountLogger.AccountLoggerLevel.WARNING, "NULL value in /create",
+                    String.format("Invalid argument accounttype: null"));
             return Response.ok().entity("FAILED").build(); //TODO: change return
         }
         
         if (name == null) {
-            logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Access /create",
-                    String.format("Invalid argument name: %s", name));
+            logger.log(AccountLogger.AccountLoggerLevel.WARNING, "NULL value in /create",
+                    String.format("Invalid argument name: null"));
             return Response.ok().entity("FAILED").build(); //TODO: change return
         }
         
         if (bank == null) {
-            logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Access /create",
-                    String.format("Invalid argument bank: %s", bank));
+            logger.log(AccountLogger.AccountLoggerLevel.WARNING, "NULL value in /create",
+                    String.format("Invalid argument bank: null"));
             return Response.ok().entity("FAILED").build(); //TODO: change return 
         }
         

@@ -1,6 +1,8 @@
 package se.liu.ida.tdp024.account.logic.impl.facade;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import se.liu.ida.tdp024.account.data.api.entity.Account;
 import se.liu.ida.tdp024.account.data.api.facade.AccountEntityFacade;
 import se.liu.ida.tdp024.account.logic.api.facade.AccountLogicFacade;
@@ -11,7 +13,9 @@ import se.liu.ida.tdp024.account.util.http.HTTPHelper;
 import se.liu.ida.tdp024.account.util.http.HTTPHelperImpl;
 import se.liu.ida.tdp024.account.logic.api.util.FinalConstants;
 import se.liu.ida.tdp024.account.logic.api.util.PersonDTO;
-import se.liu.ida.tdp024.account.util.http.HTTPHelper.HTTPException;
+import se.liu.ida.tdp024.account.util.http.HTTPHelper.HTTPHelperConnectionException;
+import se.liu.ida.tdp024.account.util.logger.AccountLogger;
+import se.liu.ida.tdp024.account.util.logger.AccountLoggerMonlog;
 
 
 public class AccountLogicFacadeImpl implements AccountLogicFacade {
@@ -19,6 +23,7 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
     private AccountEntityFacade accountEntityFacade;
     private AccountJsonSerializer jsonSerializer = new AccountJsonSerializerImpl();
     private HTTPHelper http = new HTTPHelperImpl();
+    private AccountLogger logger = new AccountLoggerMonlog();
     
     public AccountLogicFacadeImpl(AccountEntityFacade accountEntityFacade) {
         this.accountEntityFacade = accountEntityFacade;
@@ -31,7 +36,9 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
             String name,
             String bank)
             throws
-            AccountLogicFacadeIllegalArgumentException
+            AccountLogicFacadeIllegalArgumentException,
+            AccountLogicFacadeConnectionException,
+            AccountLogicFacadeStorageException
     {
         try {
             String personKey = jsonSerializer.fromJson(
@@ -43,16 +50,21 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
             
             accountEntityFacade.create(accounttype, personKey, bankKey);
             
-        } 
-        catch (HTTPException e) 
+        }   
+        catch (HTTPHelperConnectionException e) 
         {
-            //TODO: log
-            throw new AccountLogicFacadeIllegalArgumentException(e.toString()); //TODO
+            logger.log(AccountLogger.AccountLoggerLevel., "AccountLogicFAcadeImpl.create",
+                    String.format("%s", e.getMessage()));
+            throw new AccountLogicFacadeConnectionException(e.getMessage());
         } 
         catch (AccountEntityFacadeIllegalArgumentException e)
         {
             //TODO: log
             throw new AccountLogicFacadeIllegalArgumentException(e.toString()); //TODO
+        } catch (AccountEntityFacade.AccountEntityFacadeStorageException e) {
+            logger.log(AccountLogger.AccountLoggerLevel.CRITICAL, "AccountLogicFAcadeImpl.create",
+                    String.format("%s", e.getMessage()));
+            throw new AccountLogicFacadeStorageException(e.getMessage());
         }
     }
 
@@ -69,7 +81,7 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
             List<Account> accounts = accountEntityFacade.findAllByName(personKey);
             return jsonSerializer.toJson(accounts);
         } 
-        catch (HTTPException e) 
+        catch (HTTPHelperConnectionException e) 
         {
             //TODO: log
             throw new AccountLogicFacadeIllegalArgumentException(e.toString());

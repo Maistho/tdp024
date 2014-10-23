@@ -11,47 +11,53 @@ import se.liu.ida.tdp024.account.util.logger.AccountLogger;
 import se.liu.ida.tdp024.account.util.logger.AccountLoggerMonlog;
 
 public class AccountEntityFacadeDB implements AccountEntityFacade {
-    
-    private AccountLogger logger = new AccountLoggerMonlog();
-    
+
+    private final AccountLogger logger = new AccountLoggerMonlog();
+
     @Override
     public void create(String accounttype, String name, String bank)
             throws
             AccountEntityFacadeIllegalArgumentException,
-            AccountEntityFacadeStorageException
-    {
-        
+            AccountEntityFacadeStorageException {
+        if (accounttype == null || name == null || bank == null) {
+            throw new AccountEntityFacadeIllegalArgumentException("Null argument");
+        }
+
         EntityManager em = EMF.getEntityManager();
         em.getTransaction().begin();
-        
+
         Account account = new AccountDB();
         try {
-            FinalConstants.AccountTypes accountEnum = FinalConstants.AccountTypes.valueOf(accounttype);
-            account.setAccounttype(accountEnum);
-
-        } catch (IllegalArgumentException e) {
+            account.setAccounttype(accounttype); 
+        } catch (Account.AccountIllegalArgumentException e) {
+            
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "AccountEntityFacade.create",
                     String.format("No such accounttype: %s\n%s", accounttype, e.getMessage()));
-            throw new AccountEntityFacadeIllegalArgumentException("No such account type");
+            throw new AccountEntityFacadeIllegalArgumentException(e.getMessage());
         }
-        
+
         account.setName(name);
         account.setBank(bank);
-        
+
         try {
             em.persist(account);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             logger.log(e);
             throw new AccountEntityFacadeStorageException("Error storing account");
         }
 
-        em.getTransaction().commit();
+        try {
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            logger.log(e);
+            throw new AccountEntityFacadeStorageException("Could not store account");
+        }
         em.close();
     }
 
     @Override
     public List<Account> findAllByName(String key) {
-         
+
         EntityManager em = EMF.getEntityManager();
         List<Account> results = em.createQuery("SELECT a FROM AccountDB a WHERE a.name = ?1")
                 .setParameter(1, key).getResultList();
@@ -60,5 +66,50 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
         return results;
 
     }
-    
+
+    @Override
+    public void credit(long id, long amount) throws AccountEntityFacadeStorageException {
+        EntityManager em = EMF.getEntityManager();
+        em.getTransaction().begin();
+        try {
+            AccountDB account = em.find(AccountDB.class, id);
+            account.setHoldings(account.getHoldings() + amount);
+            em.getTransaction().commit();
+        } catch (IllegalArgumentException e) {
+            logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Account not found",
+                    String.format("account with id '%d' was not found", id));
+            throw new AccountEntityFacadeStorageException("Account not found");
+        } catch (Exception e) {
+            logger.log(e);
+            throw new AccountEntityFacadeStorageException("Couldn't save credit");
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public void debit(long id, long amount) throws AccountEntityFacadeStorageException, AccountEntityFacadeInsufficientHoldingsException {
+        EntityManager em = EMF.getEntityManager();
+        em.getTransaction().begin();
+        try {
+            AccountDB account = em.find(AccountDB.class, id);
+            long holdings = account.getHoldings();
+            if (holdings < amount) {
+                logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Not enough holdings",
+                        String.format("Not enough holdings on account with id '%d' to complete transaction", id));
+                throw new AccountEntityFacadeInsufficientHoldingsException("Not enough holdings");
+            }
+            account.setHoldings(holdings - amount);
+            em.getTransaction().commit();
+        } catch (IllegalArgumentException e) {
+            logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Account not found",
+                    String.format("Account with id '%d' was not found", id));
+            throw new AccountEntityFacadeStorageException("Account not found");
+        } catch (Exception e) {
+            logger.log(e);
+            throw new AccountEntityFacadeStorageException("Couldn't save credit");
+        } finally {
+            em.close();
+        }
+    }
 }

@@ -15,8 +15,5 @@ public interface FinalConstants {
         CREDIT
     }
 
-    public enum AccountTypes {
-        SAVINGS,
-        CHECK
-    }
+
 }

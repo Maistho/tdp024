@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.liu.ida.tdp024.account.data.impl.db.facade;
 
 import java.util.List;
@@ -12,48 +7,76 @@ import se.liu.ida.tdp024.account.data.api.facade.TransactionEntityFacade;
 import se.liu.ida.tdp024.account.data.api.util.FinalConstants;
 import se.liu.ida.tdp024.account.data.impl.db.entity.TransactionDB;
 import se.liu.ida.tdp024.account.data.impl.db.util.EMF;
+import se.liu.ida.tdp024.account.util.logger.AccountLogger;
+import se.liu.ida.tdp024.account.util.logger.AccountLoggerMonlog;
 
-/**
- *
- * @author maistho
- */
-public class TransactionEntityFacadeDB implements TransactionEntityFacade{
+public class TransactionEntityFacadeDB implements TransactionEntityFacade {
 
-    private void createTransaction(long account, long amount, FinalConstants.TransactionTypes transactionType) {          
-        
-        //TODO: Validate account, amount, transactiontype
-        
+    private final AccountLogger logger = new AccountLoggerMonlog();
+
+    private void createTransaction(long account, long amount, FinalConstants.TransactionTypes transactionType)
+            throws
+            TransactionEntityFacadeIllegalArgumentException,
+            TransactionEntityFacadeStorageException {
+
+        if (amount < 0) {
+            logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Amount of debit less than 0",
+                    "Amount was '%d', less than 0");
+            throw new TransactionEntityFacadeIllegalArgumentException("Amount less than 0");
+        }
+
         EntityManager em = EMF.getEntityManager();
         em.getTransaction().begin();
 
         Transaction transaction = new TransactionDB();
+
+        transaction.setTransactionType(transactionType);
         transaction.setAccount(account);
         transaction.setAmount(amount);
-        transaction.setTransactionType(transactionType);
 
-        em.persist(transaction);
-        em.getTransaction().commit();
-        em.close();
-    }   
-    
-    @Override
-    public void debit(long account, long amount) {
-        createTransaction(account, amount, FinalConstants.TransactionTypes.DEBIT);
+        try {
+            em.persist(transaction);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            logger.log(e);
+            throw new TransactionEntityFacadeStorageException("Error storing transaction");
+        } finally {
+            em.close();
+        }
     }
-    
 
     @Override
-    public void credit(long account, long amount) {
+    public void debit(long account, long amount)
+            throws
+            TransactionEntityFacadeIllegalArgumentException,
+            TransactionEntityFacadeStorageException {
+        createTransaction(account, amount, FinalConstants.TransactionTypes.DEBIT);
+
+    }
+
+    @Override
+    public void credit(long account, long amount)
+            throws
+            TransactionEntityFacadeIllegalArgumentException,
+            TransactionEntityFacadeStorageException {
         createTransaction(account, amount, FinalConstants.TransactionTypes.CREDIT);
     }
 
     @Override
-    public List<Transaction> findAllFromAccount(long account) {
+    public List<Transaction> findAllFromAccount(long account)
+            throws
+            TransactionEntityFacadeIllegalArgumentException {
         EntityManager em = EMF.getEntityManager();
-        List<Transaction> results = em.createQuery("SELECT t FROM TransactionDB t WHERE t.account = ?1")
-                .setParameter(1, account).getResultList();   
-        em.close();
+        List<Transaction> results = null;
+        try {
+            results = em.createQuery("SELECT t FROM TransactionDB t WHERE t.account = ?1")
+                    .setParameter(1, account).getResultList();
+        } catch (IllegalArgumentException e) {
+            logger.log(e);
+            throw new TransactionEntityFacadeIllegalArgumentException(e.getMessage());
+        } finally {
+            em.close();
+        }
         return results;
     }
-    
 }

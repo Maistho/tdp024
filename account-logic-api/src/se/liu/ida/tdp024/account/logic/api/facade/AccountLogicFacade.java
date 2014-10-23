@@ -20,6 +20,12 @@ public interface AccountLogicFacade {
             super(message);
         }
     }
+    public class AccountLogicFacadeInsufficientHoldingsException extends Exception {
+        public AccountLogicFacadeInsufficientHoldingsException(String message) {
+            super(message);
+        }
+    }
+    
     
     
     public void create(String accounttype, String name, String bank)
@@ -31,4 +37,15 @@ public interface AccountLogicFacade {
     public String find(String name)
             throws 
             AccountLogicFacadeIllegalArgumentException;
+    
+    public void credit(long account, long amount)
+            throws
+            AccountLogicFacadeIllegalArgumentException,
+            AccountLogicFacadeStorageException;
+    
+    public void debit(long account, long amount)
+            throws
+            AccountLogicFacadeIllegalArgumentException,
+            AccountLogicFacadeStorageException,
+            AccountLogicFacadeInsufficientHoldingsException;
 }

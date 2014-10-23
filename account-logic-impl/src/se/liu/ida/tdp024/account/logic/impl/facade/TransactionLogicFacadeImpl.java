@@ -9,18 +9,23 @@ import se.liu.ida.tdp024.account.data.api.facade.TransactionEntityFacade;
 import se.liu.ida.tdp024.account.logic.api.facade.TransactionLogicFacade;
 import se.liu.ida.tdp024.account.util.json.AccountJsonSerializer;
 import se.liu.ida.tdp024.account.util.json.AccountJsonSerializerImpl;
+import se.liu.ida.tdp024.account.logic.api.facade.AccountLogicFacade;
 
 /**
  *
  * @author maistho
  */
 public class TransactionLogicFacadeImpl implements TransactionLogicFacade {
-    public TransactionLogicFacadeImpl(TransactionEntityFacade accountEntityFacade) {
-        this.transactionEntityFacade = accountEntityFacade;
-    }
     
     private TransactionEntityFacade transactionEntityFacade;
     private AccountJsonSerializer jsonSerializer = new AccountJsonSerializerImpl();
+    private AccountLogicFacade accountLogicFacade;
+    
+    public TransactionLogicFacadeImpl(TransactionEntityFacade transactionEntityFacade, AccountLogicFacade accountLogicFacade) {
+        this.transactionEntityFacade = transactionEntityFacade;
+        this.accountLogicFacade = accountLogicFacade;
+    }
+    
     
 
     @Override
@@ -30,6 +35,7 @@ public class TransactionLogicFacadeImpl implements TransactionLogicFacade {
 
     @Override
     public void credit(long account, long amount) {
+        accountLogicFacade.credit(account,amount);
         transactionEntityFacade.credit(account, amount);
     }
 

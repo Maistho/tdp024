@@ -15,12 +15,26 @@ public interface AccountEntityFacade {
             super(message);
         }
     }
+    class AccountEntityFacadeInsufficientHoldingsException extends Exception {
+        public AccountEntityFacadeInsufficientHoldingsException(String message) {
+            super(message);
+        }
+    }
     
     
-    void create(String accounttype, String name, String body)
+    void create(String accounttype, String name, String bank)
             throws
             AccountEntityFacadeIllegalArgumentException,
             AccountEntityFacadeStorageException;
     
     List<Account> findAllByName(String key);
+    
+    void credit(long account, long amount)
+            throws
+            AccountEntityFacadeStorageException;
+    
+    void debit(long account, long amount)
+            throws
+            AccountEntityFacadeStorageException,
+            AccountEntityFacadeInsufficientHoldingsException;
 }

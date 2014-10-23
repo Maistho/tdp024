@@ -44,25 +44,33 @@ public class AccountService {
     ) 
     {
         logger.log(AccountLogger.AccountLoggerLevel.DEBUG, "Access /create", "Requested '/create'");
-        
-        if (accounttype == null) { // || name == null || bank == null) {
+        String reason = "";
+        Boolean illegalArgument = false;
+        if (accounttype == null || accounttype.equals("")) { // || name == null || bank == null) {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "NULL value in /create",
                     String.format("Invalid argument accounttype: null"));
-            return Response.ok().entity("FAILED").build(); //TODO: change return
+            reason += "accounttype == null ";
+            illegalArgument = true;
         }
         
-        if (name == null) {
+        if (name == null || name.equals("")) {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "NULL value in /create",
                     String.format("Invalid argument name: null"));
-            return Response.ok().entity("FAILED").build(); //TODO: change return
+            Response.status(Response.Status.BAD_REQUEST);
+            reason += "name == null ";
+            illegalArgument = true;
         }
         
-        if (bank == null) {
+        if (bank == null || bank.equals("")) {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "NULL value in /create",
                     String.format("Invalid argument bank: null"));
-            return Response.ok().entity("FAILED").build(); //TODO: change return 
+            Response.status(Response.Status.BAD_REQUEST);
+            reason += "bank == null";
+            illegalArgument = true;
         }
-        
+        if (illegalArgument) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(reason).build();
+        }
         try 
         {
             accountLogicFacade.create(accounttype, name, bank);
@@ -73,7 +81,12 @@ public class AccountService {
         {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Failed creating account", e.getMessage());
             return Response.ok().entity("FAILED").build(); //TODO: change return
+        } catch (AccountLogicFacade.AccountLogicFacadeStorageException e) {
+            return Response.ok().entity("FAILED").build();
+        } catch (AccountLogicFacade.AccountLogicFacadeConnectionException e) {
+            return Response.ok().entity("FAILED").build();
         }
+        
     }   
     
     @GET

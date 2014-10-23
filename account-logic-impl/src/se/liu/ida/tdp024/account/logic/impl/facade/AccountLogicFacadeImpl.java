@@ -40,7 +40,8 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
             AccountLogicFacadeConnectionException,
             AccountLogicFacadeStorageException
     {
-        try {
+        try
+        {
             String personKey = jsonSerializer.fromJson(
                     http.get(FinalConstants.PERSON_ENDPOINT+"find.name", "name", name),
                     PersonDTO.class).getKey();
@@ -50,20 +51,30 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
             
             accountEntityFacade.create(accounttype, personKey, bankKey);
             
-        }   
-        catch (HTTPHelperConnectionException e) 
+        }
+        catch (NullPointerException e)
+        {
+            logger.log(AccountLogger.AccountLoggerLevel.WARNING, "AccountLogicFAcadeImpl.create",
+                    String.format("No such user or bank"));
+            throw new AccountLogicFacadeIllegalArgumentException("No such user or bank");
+        }
+        catch (HTTPHelperConnectionException e)
         {
             logger.log(AccountLogger.AccountLoggerLevel.ALERT, "AccountLogicFAcadeImpl.create",
                     String.format("%s", e.getMessage()));
             throw new AccountLogicFacadeConnectionException(e.getMessage());
-        } catch (HTTPHelper.HTTPHelperMalformedURLException e) {
+        }
+        catch (HTTPHelper.HTTPHelperMalformedURLException e)
+        {
                 
         }
         catch (AccountEntityFacadeIllegalArgumentException e)
         {
             //TODO: log
             throw new AccountLogicFacadeIllegalArgumentException(e.toString()); //TODO
-        } catch (AccountEntityFacade.AccountEntityFacadeStorageException e) {
+        }
+        catch (AccountEntityFacade.AccountEntityFacadeStorageException e)
+        {
             logger.log(AccountLogger.AccountLoggerLevel.CRITICAL, "AccountLogicFAcadeImpl.create",
                     String.format("%s", e.getMessage()));
             throw new AccountLogicFacadeStorageException(e.getMessage());
@@ -83,6 +94,10 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
             List<Account> accounts = accountEntityFacade.findAllByName(personKey);
             return jsonSerializer.toJson(accounts);
         } 
+        catch (NullPointerException e) {
+            //TODO: do something
+            throw new AccountLogicFacadeIllegalArgumentException("no such user");
+        }
         catch (HTTPHelperConnectionException e) 
         {
             //TODO: log
@@ -90,6 +105,16 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
         } catch (HTTPHelper.HTTPHelperMalformedURLException e) {
             throw new AccountLogicFacadeIllegalArgumentException("malformedurl");
         }
+    }
+
+    @Override
+    public void credit(long account, long amount) throws AccountLogicFacadeIllegalArgumentException, AccountLogicFacadeStorageException {
+        accountEntityFacade.credit(account, amount);
+    }
+
+    @Override
+    public void debit(long account, long amount) throws AccountLogicFacadeIllegalArgumentException, AccountLogicFacadeStorageException, AccountLogicFacadeInsufficientHoldingsException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

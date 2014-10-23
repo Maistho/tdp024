@@ -96,10 +96,10 @@ public class AccountEntityFacadeTest {
         results = accountEntityFacade.findAllByName("Lisa Lisasson");
         Assert.assertEquals(0, results.size());
         try {
-                String name = "Lisa Lisasson";
-                String bank = "Bankbanken";
-                String accountType = "CHECK";
-                accountEntityFacade.create(accountType, name, bank);
+            String name = "Lisa Lisasson";
+            String bank = "Bankbanken";
+            String accountType = "CHECK";
+            accountEntityFacade.create(accountType, name, bank);
         } catch (Exception e) {
             Assert.fail("Got exception");
         }

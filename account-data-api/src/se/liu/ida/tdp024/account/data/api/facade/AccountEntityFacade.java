@@ -31,7 +31,8 @@ public interface AccountEntityFacade {
     
     void credit(long account, long amount)
             throws
-            AccountEntityFacadeStorageException;
+            AccountEntityFacadeStorageException,
+            AccountEntityFacadeIllegalArgumentException;
     
     void debit(long account, long amount)
             throws

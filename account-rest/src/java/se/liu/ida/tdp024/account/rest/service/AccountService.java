@@ -23,7 +23,7 @@ public class AccountService {
     private final AccountLogicFacade accountLogicFacade = 
             new AccountLogicFacadeImpl(new AccountEntityFacadeDB());
     private final TransactionLogicFacade transactionLogicFacade = 
-            new TransactionLogicFacadeImpl(new TransactionEntityFacadeDB());
+            new TransactionLogicFacadeImpl(new TransactionEntityFacadeDB(), accountLogicFacade);
     private final AccountLogger logger = 
             new AccountLoggerMonlog();
 

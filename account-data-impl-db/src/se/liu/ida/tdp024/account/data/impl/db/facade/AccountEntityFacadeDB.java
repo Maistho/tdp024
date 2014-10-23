@@ -28,9 +28,9 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
 
         Account account = new AccountDB();
         try {
-            account.setAccounttype(accounttype); 
+            account.setAccounttype(accounttype);
         } catch (Account.AccountIllegalArgumentException e) {
-            
+
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "AccountEntityFacade.create",
                     String.format("No such accounttype: %s\n%s", accounttype, e.getMessage()));
             throw new AccountEntityFacadeIllegalArgumentException(e.getMessage());
@@ -68,7 +68,10 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
     }
 
     @Override
-    public void credit(long id, long amount) throws AccountEntityFacadeStorageException {
+    public void credit(long id, long amount)
+            throws
+            AccountEntityFacadeStorageException,
+            AccountEntityFacadeIllegalArgumentException {
         EntityManager em = EMF.getEntityManager();
         em.getTransaction().begin();
         try {
@@ -78,7 +81,7 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
         } catch (IllegalArgumentException e) {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Account not found",
                     String.format("account with id '%d' was not found", id));
-            throw new AccountEntityFacadeStorageException("Account not found");
+            throw new AccountEntityFacadeIllegalArgumentException("Account not found");
         } catch (Exception e) {
             logger.log(e);
             throw new AccountEntityFacadeStorageException("Couldn't save credit");

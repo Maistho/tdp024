@@ -19,30 +19,28 @@ import se.liu.ida.tdp024.account.util.logger.AccountLoggerMonlog;
 
 @Path("account")
 public class AccountService {
-    
-    private final AccountLogicFacade accountLogicFacade = 
-            new AccountLogicFacadeImpl(new AccountEntityFacadeDB());
-    private final TransactionLogicFacade transactionLogicFacade = 
-            new TransactionLogicFacadeImpl(new TransactionEntityFacadeDB(), accountLogicFacade);
-    private final AccountLogger logger = 
-            new AccountLoggerMonlog();
+
+    private final AccountLogicFacade accountLogicFacade
+            = new AccountLogicFacadeImpl(new AccountEntityFacadeDB());
+    private final TransactionLogicFacade transactionLogicFacade
+            = new TransactionLogicFacadeImpl(new TransactionEntityFacadeDB(), accountLogicFacade);
+    private final AccountLogger logger
+            = new AccountLoggerMonlog();
 
     @GET
     @Path("/")
-    public Response root( )
-    {
+    public Response root() {
         logger.log(AccountLogger.AccountLoggerLevel.DEBUG, "Access /", "Requested '/'");
         return Response.ok().entity("Hello World!").build(); //TODO: change return
     }
-  
+
     @GET
     @Path("/create")
     public Response create(
             @QueryParam("accounttype") String accounttype,
             @QueryParam("name") String name,
             @QueryParam("bank") String bank
-    ) 
-    {
+    ) {
         logger.log(AccountLogger.AccountLoggerLevel.DEBUG, "Access /create", "Requested '/create'");
         String reason = "";
         Boolean illegalArgument = false;
@@ -52,7 +50,7 @@ public class AccountService {
             reason += "accounttype == null ";
             illegalArgument = true;
         }
-        
+
         if (name == null || name.equals("")) {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "NULL value in /create",
                     String.format("Invalid argument name: null"));
@@ -60,7 +58,7 @@ public class AccountService {
             reason += "name == null ";
             illegalArgument = true;
         }
-        
+
         if (bank == null || bank.equals("")) {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "NULL value in /create",
                     String.format("Invalid argument bank: null"));
@@ -71,14 +69,11 @@ public class AccountService {
         if (illegalArgument) {
             return Response.status(Response.Status.BAD_REQUEST).entity(reason).build();
         }
-        try 
-        {
+        try {
             accountLogicFacade.create(accounttype, name, bank);
             //TODO: Log success
             return Response.ok().entity("OK").build(); //TODO: change return?
-        }
-        catch (AccountLogicFacadeIllegalArgumentException e) 
-        {
+        } catch (AccountLogicFacadeIllegalArgumentException e) {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Failed creating account", e.getMessage());
             return Response.ok().entity("FAILED").build(); //TODO: change return
         } catch (AccountLogicFacade.AccountLogicFacadeStorageException e) {
@@ -86,71 +81,80 @@ public class AccountService {
         } catch (AccountLogicFacade.AccountLogicFacadeConnectionException e) {
             return Response.ok().entity("FAILED").build();
         }
-        
-    }   
-    
+
+    }
+
     @GET
     @Path("/find/{name : [\\w(%20)]+}")
     public Response find(
             @PathParam("name") String name
-    ) 
-    {
+    ) {
         logger.log(AccountLogger.AccountLoggerLevel.DEBUG, "Access /find", "Requested /find/" + name);
-                
+
         if (name == null) {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Access /find",
                     String.format("Invalid Argument name: %s", name));
             return Response.ok().entity("FAILED").build(); //TODO: change return
         }
 
-        try 
-        {
+        try {
             String accounts = accountLogicFacade.find(name);
             return Response.ok().entity(accounts).build();
-        } 
-        catch (AccountLogicFacade.AccountLogicFacadeIllegalArgumentException ex) 
-        {
-            Logger.getLogger(AccountService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (AccountLogicFacade.AccountLogicFacadeIllegalArgumentException e) {
             return Response.ok().entity("FAILED").build(); //TODO: change return
         }
-        
+
     }
-    
+
     @GET
     @Path("/credit")
     public Response credit(
             @QueryParam("id") long id,
             @QueryParam("amount") long amount
-    )
-    {
+    ) {
         logger.log(AccountLogger.AccountLoggerLevel.DEBUG, "Access /credit", "Requested '/credit'");
-        
-        transactionLogicFacade.credit(id, amount);
-        return Response.ok().entity("OK").build(); 
-    }
-    
-    @GET
-    @Path("/debit")
-    public Response debit( 
-            @QueryParam("id") long id,
-            @QueryParam("amount") long amount    
-    ) 
-    {
-        logger.log(AccountLogger.AccountLoggerLevel.DEBUG, "Access /debit", "Requested '/debit'");
 
-        transactionLogicFacade.debit(id, amount);
+        try {
+            transactionLogicFacade.credit(id, amount);
+        } catch (TransactionLogicFacade.TransactionLogicFacadeIllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (TransactionLogicFacade.TransactionLogicFacadeStorageException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
         return Response.ok().entity("OK").build();
     }
-    
+
+    @GET
+    @Path("/debit")
+    public Response debit(
+            @QueryParam("id") long id,
+            @QueryParam("amount") long amount
+    ) {
+        logger.log(AccountLogger.AccountLoggerLevel.DEBUG, "Access /debit", "Requested '/debit'");
+
+        try {
+            transactionLogicFacade.debit(id, amount);
+        } catch (TransactionLogicFacade.TransactionLogicFacadeIllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (TransactionLogicFacade.TransactionLogicFacadeStorageException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+        return Response.ok().entity("OK").build();
+    }
+
     @GET
     @Path("/transactions")
     public Response transactions(
             @QueryParam("id") long id
-    ) 
-    {
+    ) {
         logger.log(AccountLogger.AccountLoggerLevel.DEBUG, "Access /transactions", "Requested '/transactions'");
-        String response = transactionLogicFacade.findAllFromAccount(id);
-        return Response.ok().entity(response).build();
+        try {
+            String response = transactionLogicFacade.findAllFromAccount(id);
+            return Response.ok().entity(response).build();
+        } catch (TransactionLogicFacade.TransactionLogicFacadeIllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("FAILED").build();
+            
+        }
     }
-    
+
 }

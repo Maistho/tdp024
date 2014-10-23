@@ -53,10 +53,12 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
         }   
         catch (HTTPHelperConnectionException e) 
         {
-            logger.log(AccountLogger.AccountLoggerLevel., "AccountLogicFAcadeImpl.create",
+            logger.log(AccountLogger.AccountLoggerLevel.ALERT, "AccountLogicFAcadeImpl.create",
                     String.format("%s", e.getMessage()));
             throw new AccountLogicFacadeConnectionException(e.getMessage());
-        } 
+        } catch (HTTPHelper.HTTPHelperMalformedURLException e) {
+                
+        }
         catch (AccountEntityFacadeIllegalArgumentException e)
         {
             //TODO: log
@@ -85,6 +87,8 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
         {
             //TODO: log
             throw new AccountLogicFacadeIllegalArgumentException(e.toString());
+        } catch (HTTPHelper.HTTPHelperMalformedURLException e) {
+            throw new AccountLogicFacadeIllegalArgumentException("malformedurl");
         }
     }
     

@@ -33,6 +33,8 @@ public class AccountLoggerMonlog implements AccountLogger {
                 "timestamp", new Date().getTime() + ""});
         } catch (HTTPHelperConnectionException e) {
             
+        } catch (HTTPHelper.HTTPHelperMalformedURLException e) {
+                
         }
     }
 
@@ -49,6 +51,8 @@ public class AccountLoggerMonlog implements AccountLogger {
                 "long_desc", longMessage,
                 "timestamp", new Date().getTime() + ""});
             } catch (HTTPHelperConnectionException e) {
+                
+            } catch (HTTPHelper.HTTPHelperMalformedURLException e) {
                 
             }
     }

@@ -41,7 +41,7 @@ public class HTTPHelperImpl implements HTTPHelper {
             rd.close();
         } catch (MalformedURLException e) {
             accountLogger.log(e);
-            throw new HTTPHelperConnectionException("Malformed URL");
+            throw new HTTPHelperMalformedURLException("Malformed URL");
         } catch (IOException e) {
             accountLogger.log(e);
             throw new HTTPHelperConnectionException("Error reading data");
@@ -52,7 +52,10 @@ public class HTTPHelperImpl implements HTTPHelper {
     }
 
     @Override
-    public String postJSON(String endpoint, String[] queryParameters, String[] dataParameters) {
+    public String postJSON(String endpoint, String[] queryParameters, String[] dataParameters)
+    throws HTTPHelperConnectionException,
+            HTTPHelperMalformedURLException
+    {
 
 
         String urlToRead = createURL(endpoint, queryParameters);
@@ -100,13 +103,11 @@ public class HTTPHelperImpl implements HTTPHelper {
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            return null;
+            throw new HTTPHelperMalformedURLException("beep boop");
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
         }
-
-
+        return null;
     }
 
     private String createURL(String endpoint, String... parameters) {

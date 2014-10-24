@@ -102,6 +102,8 @@ public class AccountService {
             return Response.ok().entity(accounts).build();
         } catch (AccountLogicFacade.AccountLogicFacadeIllegalArgumentException e) {
             return Response.ok().entity("FAILED").build(); //TODO: change return
+        } catch (AccountLogicFacade.AccountLogicFacadeStorageException ex) {
+            return Response.ok().entity("FAILED").build(); //TODO: change return
         }
 
     }

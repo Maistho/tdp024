@@ -70,7 +70,8 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
     @Override
     public String find(String name)
             throws
-            AccountLogicFacadeIllegalArgumentException {
+            AccountLogicFacadeIllegalArgumentException,
+            AccountLogicFacadeStorageException {
         try {
             String personKey = jsonSerializer.fromJson(
                     http.get(FinalConstants.PERSON_ENDPOINT + "find.name", "name", name),
@@ -78,13 +79,15 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
             List<Account> accounts = accountEntityFacade.findAllByName(personKey);
             return jsonSerializer.toJson(accounts);
         } catch (NullPointerException e) {
-            //TODO: do something
+            logger.log(e);
             throw new AccountLogicFacadeIllegalArgumentException("no such user");
         } catch (HTTPHelperConnectionException e) {
-            //TODO: log
+            logger.log(e);
             throw new AccountLogicFacadeIllegalArgumentException(e.toString());
         } catch (HTTPHelper.HTTPHelperMalformedURLException e) {
             throw new AccountLogicFacadeIllegalArgumentException("malformedurl");
+        } catch (AccountEntityFacade.AccountEntityFacadeStorageException e) {
+            throw new AccountLogicFacadeStorageException(e.getMessage());
         }
     }
 

@@ -36,7 +36,8 @@ public interface AccountLogicFacade {
     
     public String find(String name)
             throws 
-            AccountLogicFacadeIllegalArgumentException;
+            AccountLogicFacadeIllegalArgumentException,
+            AccountLogicFacadeStorageException;
     
     public void credit(long account, long amount)
             throws

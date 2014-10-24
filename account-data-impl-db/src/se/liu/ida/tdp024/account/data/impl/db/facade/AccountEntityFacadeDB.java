@@ -6,7 +6,6 @@ import javax.persistence.LockModeType;
 import se.liu.ida.tdp024.account.data.api.facade.AccountEntityFacade;
 import se.liu.ida.tdp024.account.data.impl.db.util.EMF;
 import se.liu.ida.tdp024.account.data.api.entity.Account;
-import se.liu.ida.tdp024.account.data.api.util.FinalConstants;
 import se.liu.ida.tdp024.account.data.impl.db.entity.AccountDB;
 import se.liu.ida.tdp024.account.util.logger.AccountLogger;
 import se.liu.ida.tdp024.account.util.logger.AccountLoggerMonlog;
@@ -134,6 +133,7 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
             logger.log(e);
             throw new AccountEntityFacadeStorageException("Couldn't save credit");
         } finally {
+            em.flush();
             em.close();
         }
     }

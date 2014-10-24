@@ -1,7 +1,5 @@
 package se.liu.ida.tdp024.account.logic.api.facade;
 
-import se.liu.ida.tdp024.account.data.api.entity.Account;
-
 
 public interface AccountLogicFacade {
     

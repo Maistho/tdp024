@@ -1,8 +1,6 @@
 package se.liu.ida.tdp024.account.logic.impl.facade;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import se.liu.ida.tdp024.account.data.api.entity.Account;
 import se.liu.ida.tdp024.account.data.api.facade.AccountEntityFacade;
 import se.liu.ida.tdp024.account.logic.api.facade.AccountLogicFacade;

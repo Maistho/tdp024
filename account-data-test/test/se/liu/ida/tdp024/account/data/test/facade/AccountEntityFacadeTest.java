@@ -1,8 +1,6 @@
 package se.liu.ida.tdp024.account.data.test.facade;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Test;

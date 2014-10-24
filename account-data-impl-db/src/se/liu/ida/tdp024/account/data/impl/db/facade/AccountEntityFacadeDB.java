@@ -28,7 +28,7 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
 
         Account account = new AccountDB();
         try {
-            account.setAccounttype(accounttype);
+            account.setAccountType(accounttype);
         } catch (Account.AccountIllegalArgumentException e) {
 
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "AccountEntityFacade.create",
@@ -36,8 +36,8 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
             throw new AccountEntityFacadeIllegalArgumentException(e.getMessage());
         }
 
-        account.setName(name);
-        account.setBank(bank);
+        account.setPersonKey(name);
+        account.setBankKey(bank);
 
         try {
             em.persist(account);
@@ -63,7 +63,7 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
         EntityManager em = EMF.getEntityManager();
         List<Account> results;
         try {
-            results = em.createQuery("SELECT a FROM AccountDB a WHERE a.name = ?1")
+            results = em.createQuery("SELECT a FROM AccountDB a WHERE a.personKey = ?1")
                     .setParameter(1, key).getResultList();
         } catch (Exception e) {
             logger.log(e);

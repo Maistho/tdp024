@@ -19,19 +19,19 @@ public interface Account extends Serializable {
 
     public long getId();
 
-    public String getAccounttype();
+    public String getAccountType();
 
-    public void setAccounttype(String accounttype)
+    public void setAccountType(String accounttype)
             throws
             AccountIllegalArgumentException;
 
-    public String getName();
+    public String getPersonKey();
 
-    public void setName(String name);
+    public void setPersonKey(String name);
 
-    public String getBank();
+    public String getBankKey();
 
-    public void setBank(String bank);
+    public void setBankKey(String bank);
 
     public long getHoldings();
 

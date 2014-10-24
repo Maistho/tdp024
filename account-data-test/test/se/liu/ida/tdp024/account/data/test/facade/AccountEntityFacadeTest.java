@@ -116,9 +116,9 @@ public class AccountEntityFacadeTest {
         try {
             results = accountEntityFacade.findAllByName("Lisa Lisasson");
             Assert.assertEquals(1, results.size());
-            Assert.assertEquals("CHECK", results.get(0).getAccounttype());
-            Assert.assertEquals("Lisa Lisasson", results.get(0).getName());
-            Assert.assertEquals("Bankbanken", results.get(0).getBank());
+            Assert.assertEquals("CHECK", results.get(0).getAccountType());
+            Assert.assertEquals("Lisa Lisasson", results.get(0).getPersonKey());
+            Assert.assertEquals("Bankbanken", results.get(0).getBankKey());
         } catch (AccountEntityFacade.AccountEntityFacadeStorageException ex) {
             Assert.fail("Got exception");
         }

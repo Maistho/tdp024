@@ -14,21 +14,21 @@ public class AccountDB implements Account {
     private long id;
     private long holdings;
 
-    private String name;
-    private String bank;
-    private AccountTypes accounttype;
+    private String personKey;
+    private String bankKey;
+    private AccountTypes accountType;
 
     @Override
-    public String getAccounttype() {
-        return accounttype.name();
+    public String getAccountType() {
+        return accountType.name();
     }
 
     @Override
-    public void setAccounttype(String accounttype)
+    public void setAccountType(String accounttype)
             throws
             AccountIllegalArgumentException {
         try {
-            this.accounttype = Account.AccountTypes.valueOf(accounttype);
+            this.accountType = Account.AccountTypes.valueOf(accounttype);
 
         } catch (IllegalArgumentException e) {
             throw new Account.AccountIllegalArgumentException("No such account type");
@@ -36,23 +36,23 @@ public class AccountDB implements Account {
     }
 
     @Override
-    public String getName() {
-        return name;
+    public String getPersonKey() {
+        return personKey;
     }
 
     @Override
-    public void setName(String name) {
-        this.name = name;
+    public void setPersonKey(String name) {
+        this.personKey = name;
     }
 
     @Override
-    public String getBank() {
-        return bank;
+    public String getBankKey() {
+        return bankKey;
     }
 
     @Override
-    public void setBank(String bank) {
-        this.bank = bank;
+    public void setBankKey(String bank) {
+        this.bankKey = bank;
     }
 
     @Override

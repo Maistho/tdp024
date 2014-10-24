@@ -105,7 +105,7 @@ public class AccountService {
             String accounts = accountLogicFacade.find(name);
             return Response.ok().entity(accounts).build();
         } catch (AccountLogicFacade.AccountLogicFacadeIllegalArgumentException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("{'message':'not found'}").build();
+            return Response.status(Response.Status.OK).entity("[]").build();
         } catch (AccountLogicFacade.AccountLogicFacadeStorageException e) {
             return Response.ok().entity(e.getMessage()).build(); //TODO: change return
         }

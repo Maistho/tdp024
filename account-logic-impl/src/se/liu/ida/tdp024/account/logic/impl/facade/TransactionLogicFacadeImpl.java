@@ -15,6 +15,8 @@ import se.liu.ida.tdp024.account.logic.api.facade.TransactionLogicFacade;
 import se.liu.ida.tdp024.account.util.json.AccountJsonSerializer;
 import se.liu.ida.tdp024.account.util.json.AccountJsonSerializerImpl;
 import se.liu.ida.tdp024.account.logic.api.facade.AccountLogicFacade;
+import se.liu.ida.tdp024.account.util.logger.AccountLogger;
+import se.liu.ida.tdp024.account.util.logger.AccountLoggerMonlog;
 
 /**
  *
@@ -26,6 +28,7 @@ public class TransactionLogicFacadeImpl implements TransactionLogicFacade {
     private AccountJsonSerializer jsonSerializer = new AccountJsonSerializerImpl();
     private AccountLogicFacade accountLogicFacade;
     private AccountEntityFacade accountEntityFacade = new AccountEntityFacadeDB();
+    private AccountLogger logger = new AccountLoggerMonlog();
 
     public TransactionLogicFacadeImpl(TransactionEntityFacade transactionEntityFacade, AccountLogicFacade accountLogicFacade) {
         this.transactionEntityFacade = transactionEntityFacade;
@@ -50,7 +53,11 @@ public class TransactionLogicFacadeImpl implements TransactionLogicFacade {
         try {
 
             Account account = accountEntityFacade.findById(account_id);
-            transactionEntityFacade.debit(account, amount, status);
+            if (account != null) {
+                transactionEntityFacade.debit(account_id, amount, status);
+            } else {
+                throw new TransactionLogicFacadeIllegalArgumentException("No such account");
+            }
 
         } catch (AccountEntityFacade.AccountEntityFacadeIllegalArgumentException ex) {
             //TODO: replace logs
@@ -72,14 +79,20 @@ public class TransactionLogicFacadeImpl implements TransactionLogicFacade {
         } catch (AccountLogicFacade.AccountLogicFacadeIllegalArgumentException e) {
             throw new TransactionLogicFacadeIllegalArgumentException(e.getMessage());
         } catch (AccountLogicFacade.AccountLogicFacadeStorageException e) {
+            logger.log(e);
             throw new TransactionLogicFacadeStorageException(e.getMessage());
         }
         try {
             Account account = accountEntityFacade.findById(account_id);
-            transactionEntityFacade.credit(account, amount);
+            if (account != null ) {
+            transactionEntityFacade.credit(account_id, amount);
+            } else {
+                throw new TransactionLogicFacadeIllegalArgumentException(("No such account"));
+            }
         } catch (TransactionEntityFacade.TransactionEntityFacadeIllegalArgumentException e) {
             throw new TransactionLogicFacadeIllegalArgumentException(e.getMessage());
         } catch (TransactionEntityFacade.TransactionEntityFacadeStorageException e) {
+            logger.log(e);
             throw new TransactionLogicFacadeStorageException(e.getMessage());
         } catch (AccountEntityFacade.AccountEntityFacadeIllegalArgumentException ex) {
             //TODO: replace logger

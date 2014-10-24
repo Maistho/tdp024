@@ -48,11 +48,11 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
             accountEntityFacade.create(accounttype, personKey, bankKey);
 
         } catch (NullPointerException e) {
-            logger.log(AccountLogger.AccountLoggerLevel.WARNING, "AccountLogicFAcadeImpl.create",
+            logger.log(AccountLogger.AccountLoggerLevel.WARNING, "AccountLogicFacadeImpl.create",
                     String.format("No such user or bank"));
             throw new AccountLogicFacadeIllegalArgumentException("No such user or bank");
         } catch (HTTPHelperConnectionException e) {
-            logger.log(AccountLogger.AccountLoggerLevel.ALERT, "AccountLogicFAcadeImpl.create",
+            logger.log(AccountLogger.AccountLoggerLevel.ALERT, "AccountLogicFacadeImpl.create",
                     String.format("%s", e.getMessage()));
             throw new AccountLogicFacadeConnectionException(e.getMessage());
         } catch (HTTPHelper.HTTPHelperMalformedURLException e) {
@@ -61,7 +61,7 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
             //TODO: log
             throw new AccountLogicFacadeIllegalArgumentException(e.toString()); //TODO
         } catch (AccountEntityFacade.AccountEntityFacadeStorageException e) {
-            logger.log(AccountLogger.AccountLoggerLevel.CRITICAL, "AccountLogicFAcadeImpl.create",
+            logger.log(AccountLogger.AccountLoggerLevel.CRITICAL, "AccountLogicFacadeImpl.create",
                     String.format("%s", e.getMessage()));
             throw new AccountLogicFacadeStorageException(e.getMessage());
         }
@@ -101,6 +101,7 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
             logger.log(e);
             throw new AccountLogicFacadeStorageException(e.getMessage());
         } catch (AccountEntityFacadeIllegalArgumentException e) {
+            logger.log(e);
             throw new AccountLogicFacadeIllegalArgumentException(e.getMessage());
         }
     }

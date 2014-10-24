@@ -8,7 +8,7 @@ public interface Transaction extends Serializable {
 
     long getId();
 
-    Account getAccount();
+    long getAccount();
 
     long getAmount();
 
@@ -18,7 +18,7 @@ public interface Transaction extends Serializable {
     
     boolean getStatus();
 
-    void setAccount(Account account);
+    void setAccount(long account);
 
     void setAmount(long amount);
 

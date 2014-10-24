@@ -1,7 +1,6 @@
 package se.liu.ida.tdp024.account.data.api.entity;
 
 import java.io.Serializable;
-import se.liu.ida.tdp024.account.data.api.util.FinalConstants;
 
 public interface Account extends Serializable {
 

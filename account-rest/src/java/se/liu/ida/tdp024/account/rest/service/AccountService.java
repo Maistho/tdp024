@@ -47,23 +47,21 @@ public class AccountService {
         if (accounttype == null || accounttype.equals("")) { // || name == null || bank == null) {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "NULL value in /create",
                     String.format("Invalid argument accounttype: null"));
-            reason += "accounttype == null ";
+            reason += "AccountType is null, ";
             illegalArgument = true;
         }
 
         if (name == null || name.equals("")) {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "NULL value in /create",
                     String.format("Invalid argument name: null"));
-            Response.status(Response.Status.BAD_REQUEST);
-            reason += "name == null ";
+            reason += "Name is null, ";
             illegalArgument = true;
         }
 
         if (bank == null || bank.equals("")) {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "NULL value in /create",
                     String.format("Invalid argument bank: null"));
-            Response.status(Response.Status.BAD_REQUEST);
-            reason += "bank == null";
+            reason += "Bank is null";
             illegalArgument = true;
         }
         if (illegalArgument) {
@@ -71,15 +69,21 @@ public class AccountService {
         }
         try {
             accountLogicFacade.create(accounttype, name, bank);
-            //TODO: Log success
-            return Response.ok().entity("OK").build(); //TODO: change return?
+            logger.log(AccountLogger.AccountLoggerLevel.INFO, "Created new account",
+                    String.format("New Account with:\nAccountType: %s\nName: %s\nBank: %s", accounttype, name, bank));
+            return Response.ok().entity("OK").build();
+
         } catch (AccountLogicFacadeIllegalArgumentException e) {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Failed creating account", e.getMessage());
-            return Response.ok().entity(e.getMessage()).build(); //TODO: change return
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid arguments.").build(); //TODO: change return
         } catch (AccountLogicFacade.AccountLogicFacadeStorageException e) {
-            return Response.ok().entity(e.getMessage()).build();
+            logger.log(AccountLogger.AccountLoggerLevel.CRITICAL, "Storage error",
+                    String.format("Message: %s", e.getMessage()));
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("INTERNAL SERVER ERROR").build();
         } catch (AccountLogicFacade.AccountLogicFacadeConnectionException e) {
-            return Response.ok().entity(e.getMessage()).build();
+            logger.log(AccountLogger.AccountLoggerLevel.CRITICAL, "Error connecting to remote server",
+                    String.format("Message: %s", e.getMessage()));
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("INTERNAL SERVER ERROR").build();
         }
 
     }
@@ -119,9 +123,10 @@ public class AccountService {
         try {
             transactionLogicFacade.credit(id, amount);
         } catch (TransactionLogicFacade.TransactionLogicFacadeIllegalArgumentException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("Illegal Argument").build();
         } catch (TransactionLogicFacade.TransactionLogicFacadeStorageException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+            logger.log(e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("INTERNAL SERVER ERROR").build();
         }
         return Response.ok().entity("OK").build();
     }
@@ -137,7 +142,7 @@ public class AccountService {
         try {
             transactionLogicFacade.debit(id, amount);
         } catch (TransactionLogicFacade.TransactionLogicFacadeIllegalArgumentException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("Illegal Arguement").build();
         } catch (TransactionLogicFacade.TransactionLogicFacadeStorageException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
@@ -155,7 +160,7 @@ public class AccountService {
             return Response.ok().entity(response).build();
         } catch (TransactionLogicFacade.TransactionLogicFacadeIllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("FAILED").build();
-            
+
         }
     }
 

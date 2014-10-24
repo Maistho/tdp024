@@ -1,7 +1,5 @@
 package se.liu.ida.tdp024.account.logic.test.facade;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.After;
@@ -86,5 +84,49 @@ public class TransactionLogicFacadeTest {
 
     }
 
-    //Test findallfromaccount
+    @Test
+    public void testFindAllFromAccount() {
+        String results = "";
+        try {
+            //test with no account
+            results = transactionLogicFacade.findAllFromAccount(1);
+            Assert.assertEquals("[]", results);
+        } catch (TransactionLogicFacade.TransactionLogicFacadeIllegalArgumentException ex) {
+            Assert.fail("Got exception");
+        }
+
+        try {
+            //Test with account without transactions
+            accountLogicFacade.create("SAVINGS", "Lisa Lisasson", "SWEDBANK");
+        } catch (AccountLogicFacade.AccountLogicFacadeIllegalArgumentException ex) {
+            Assert.fail("Got exception");
+        } catch (AccountLogicFacade.AccountLogicFacadeConnectionException ex) {
+            Assert.fail("Got exception");
+        } catch (AccountLogicFacade.AccountLogicFacadeStorageException ex) {
+            Assert.fail("Got exception");
+        }
+        try {
+            results = transactionLogicFacade.findAllFromAccount(1);
+            Assert.assertEquals("[]", results);
+        } catch (TransactionLogicFacade.TransactionLogicFacadeIllegalArgumentException ex) {
+            Assert.fail("Got exception");
+        }
+
+        try {
+            //Test with account with transactions
+            transactionLogicFacade.credit(1, 100);
+            transactionLogicFacade.debit(1, 33);
+        } catch (TransactionLogicFacade.TransactionLogicFacadeIllegalArgumentException ex) {
+            Assert.fail("Got exception");
+        } catch (TransactionLogicFacade.TransactionLogicFacadeStorageException ex) {
+            Assert.fail("Got exception");
+        }
+        try {
+            results = transactionLogicFacade.findAllFromAccount(1);
+            Assert.assertTrue(results.length() > 2);
+        } catch (TransactionLogicFacade.TransactionLogicFacadeIllegalArgumentException ex) {
+            Assert.fail("Got exception");
+        }
+
+    }
 }

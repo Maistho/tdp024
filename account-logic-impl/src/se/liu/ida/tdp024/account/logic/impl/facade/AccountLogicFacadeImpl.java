@@ -107,7 +107,22 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
     }
 
     @Override
-    public void debit(long account, long amount) throws AccountLogicFacadeIllegalArgumentException, AccountLogicFacadeStorageException, AccountLogicFacadeInsufficientHoldingsException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void debit(long account, long amount)
+            throws
+            AccountLogicFacadeIllegalArgumentException,
+            AccountLogicFacadeStorageException,
+            AccountLogicFacadeInsufficientHoldingsException {
+        try {
+            accountEntityFacade.debit(account, amount);
+        } catch (AccountEntityFacade.AccountEntityFacadeStorageException e) {
+            throw new AccountLogicFacadeStorageException(e.getMessage());
+        } catch (AccountEntityFacade.AccountEntityFacadeInsufficientHoldingsException e) {
+            logger.log(AccountLogger.AccountLoggerLevel.ALERT, "Not enough holdings on account",
+                    String.format("Not enough holdings on account '%d' to make debit of '%d'", account, amount));
+            throw new AccountLogicFacadeInsufficientHoldingsException(e.getMessage());
+        } catch (AccountEntityFacadeIllegalArgumentException e) {
+            throw new AccountLogicFacadeIllegalArgumentException(e.getMessage());
+        }
+
     }
 }

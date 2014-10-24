@@ -12,7 +12,6 @@ import se.liu.ida.tdp024.account.data.impl.db.facade.AccountEntityFacadeDB;
 import se.liu.ida.tdp024.account.data.impl.db.util.StorageFacadeDB;
 import se.liu.ida.tdp024.account.logic.api.facade.AccountLogicFacade;
 import se.liu.ida.tdp024.account.logic.impl.facade.AccountLogicFacadeImpl;
-import se.liu.ida.tdp024.account.util.http.HTTPHelper;
 
 public class AccountLogicFacadeTest {
 

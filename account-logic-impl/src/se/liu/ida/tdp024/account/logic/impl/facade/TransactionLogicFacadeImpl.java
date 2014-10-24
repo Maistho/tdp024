@@ -23,18 +23,18 @@ import se.liu.ida.tdp024.account.util.logger.AccountLoggerMonlog;
  * @author maistho
  */
 public class TransactionLogicFacadeImpl implements TransactionLogicFacade {
-
+    
     private TransactionEntityFacade transactionEntityFacade;
     private AccountJsonSerializer jsonSerializer = new AccountJsonSerializerImpl();
     private AccountLogicFacade accountLogicFacade;
     private AccountEntityFacade accountEntityFacade = new AccountEntityFacadeDB();
     private AccountLogger logger = new AccountLoggerMonlog();
-
+    
     public TransactionLogicFacadeImpl(TransactionEntityFacade transactionEntityFacade, AccountLogicFacade accountLogicFacade) {
         this.transactionEntityFacade = transactionEntityFacade;
         this.accountLogicFacade = accountLogicFacade;
     }
-
+    
     @Override
     public void debit(long account_id, long amount)
             throws
@@ -44,6 +44,7 @@ public class TransactionLogicFacadeImpl implements TransactionLogicFacade {
         try {
             accountLogicFacade.debit(account_id, amount);
         } catch (AccountLogicFacade.AccountLogicFacadeIllegalArgumentException ex) {
+            //TODO: logs remove them
             Logger.getLogger(TransactionLogicFacadeImpl.class.getName()).log(Level.SEVERE, null, ex);
         } catch (AccountLogicFacade.AccountLogicFacadeStorageException ex) {
             Logger.getLogger(TransactionLogicFacadeImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -51,24 +52,24 @@ public class TransactionLogicFacadeImpl implements TransactionLogicFacade {
             status = false;
         }
         try {
-
+            
             Account account = accountEntityFacade.findById(account_id);
             if (account != null) {
                 transactionEntityFacade.debit(account_id, amount, status);
             } else {
                 throw new TransactionLogicFacadeIllegalArgumentException("No such account");
             }
-
-        } catch (AccountEntityFacade.AccountEntityFacadeIllegalArgumentException ex) {
-            //TODO: replace logs
-            Logger.getLogger(TransactionLogicFacadeImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (TransactionEntityFacade.TransactionEntityFacadeIllegalArgumentException ex) {
-            Logger.getLogger(TransactionLogicFacadeImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (TransactionEntityFacade.TransactionEntityFacadeStorageException ex) {
-            Logger.getLogger(TransactionLogicFacadeImpl.class.getName()).log(Level.SEVERE, null, ex);
+            
+        } catch (AccountEntityFacade.AccountEntityFacadeIllegalArgumentException e) {
+            //TODO: log stuff
+            throw new TransactionLogicFacadeIllegalArgumentException(e.getMessage());
+        } catch (TransactionEntityFacade.TransactionEntityFacadeIllegalArgumentException e) {
+            throw new TransactionLogicFacadeIllegalArgumentException(e.getMessage());
+        } catch (TransactionEntityFacade.TransactionEntityFacadeStorageException e) {
+            throw new TransactionLogicFacadeStorageException(e.getMessage());
         }
     }
-
+    
     @Override
     public void credit(long account_id, long amount)
             throws
@@ -84,8 +85,8 @@ public class TransactionLogicFacadeImpl implements TransactionLogicFacade {
         }
         try {
             Account account = accountEntityFacade.findById(account_id);
-            if (account != null ) {
-            transactionEntityFacade.credit(account_id, amount);
+            if (account != null) {
+                transactionEntityFacade.credit(account_id, amount);
             } else {
                 throw new TransactionLogicFacadeIllegalArgumentException(("No such account"));
             }
@@ -99,7 +100,7 @@ public class TransactionLogicFacadeImpl implements TransactionLogicFacade {
             Logger.getLogger(TransactionLogicFacadeImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     @Override
     public String findAllFromAccount(long account)
             throws
@@ -110,5 +111,5 @@ public class TransactionLogicFacadeImpl implements TransactionLogicFacade {
             throw new TransactionLogicFacadeIllegalArgumentException(e.getMessage());
         }
     }
-
+    
 }

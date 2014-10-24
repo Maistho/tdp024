@@ -95,7 +95,7 @@ public class AccountService {
 
         if (name == null) {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Access /find",
-                    String.format("Invalid Argument name: %s", name));
+                    "Invalid Argument name: null");
             return Response.ok().entity("FAILED").build(); //TODO: change return
         }
 

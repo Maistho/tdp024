@@ -32,7 +32,7 @@ public class AccountServiceTest {
 
     }
 
-    // @Test
+    @Test
     public void createSuccessAllCombos() {
 
         List<String> personNames = new ArrayList<String>();

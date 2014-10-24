@@ -83,14 +83,16 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
         EntityManager em = EMF.getEntityManager();
         em.getTransaction().begin();
         try {
-            AccountDB account = em.find(AccountDB.class, id, LockModeType.PESSIMISTIC_WRITE);
+            AccountDB account = em.find(AccountDB.class, id); //, LockModeType.PESSIMISTIC_WRITE);
+            if (account == null) {
+                em.flush();
+                throw new AccountEntityFacadeIllegalArgumentException("could not find account");
+            }
+
             account.setHoldings(account.getHoldings() + amount);
             em.getTransaction().commit();
+
         } catch (IllegalArgumentException e) {
-            logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Account not found",
-                    String.format("account with id '%d' was not found", id));
-            throw new AccountEntityFacadeIllegalArgumentException("Account not found");
-        } catch (NullPointerException e) {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Account not found",
                     String.format("account with id '%d' was not found", id));
             throw new AccountEntityFacadeIllegalArgumentException("Account not found");
@@ -98,6 +100,9 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
             logger.log(e);
             throw new AccountEntityFacadeStorageException("Couldn't save credit");
         } finally {
+            if (em.getTransaction().isActive()) {
+                em.flush();
+            }
             em.close();
         }
     }
@@ -111,29 +116,30 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
         em.getTransaction().begin();
         try {
             Account account = em.find(AccountDB.class, id, LockModeType.PESSIMISTIC_WRITE);
+            if (account == null) {
+                throw new AccountEntityFacadeIllegalArgumentException("Could not find account");
+            }
+
             long holdings = account.getHoldings();
             if (holdings < amount) {
                 logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Not enough holdings",
                         String.format("Not enough holdings on account with id '%d' to complete transaction", id));
                 throw new AccountEntityFacadeInsufficientHoldingsException("Not enough holdings");
             }
+
             account.setHoldings(holdings - amount);
             em.getTransaction().commit();
+
         } catch (AccountEntityFacadeInsufficientHoldingsException e) {
             throw e;
         } catch (IllegalArgumentException e) {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Account not found",
                     String.format("Account with id '%d' was not found", id));
             throw new AccountEntityFacadeIllegalArgumentException("Account not found");
-        } catch (NullPointerException e) {
-            logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Account not found",
-                    String.format("account with id '%d' was not found", id));
-            throw new AccountEntityFacadeIllegalArgumentException("Account not found");
-        } catch (Exception e) {
-            logger.log(e);
-            throw new AccountEntityFacadeStorageException("Couldn't save credit");
         } finally {
-            em.flush();
+            if (em.getTransaction().isActive()) {
+                em.flush();
+            }
             em.close();
         }
     }

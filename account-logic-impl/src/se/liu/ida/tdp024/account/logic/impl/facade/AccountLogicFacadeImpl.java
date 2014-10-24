@@ -36,19 +36,18 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
             AccountLogicFacadeConnectionException,
             AccountLogicFacadeStorageException {
         try {
-            String personKey = jsonSerializer.fromJson(
+            PersonDTO persondto = jsonSerializer.fromJson(
                     http.get(FinalConstants.PERSON_ENDPOINT + "find.name", "name", name),
-                    PersonDTO.class).getKey();
-            String bankKey = jsonSerializer.fromJson(
+                    PersonDTO.class);
+            PersonDTO bankdto = jsonSerializer.fromJson(
                     http.get(FinalConstants.BANK_ENDPOINT + "find.name", "name", bank),
-                    PersonDTO.class).getKey();
-
+                    PersonDTO.class);
+            if(persondto == null || bankdto == null) {
+                throw new AccountLogicFacadeIllegalArgumentException("could not find person or bank");
+            }
+            String personKey = persondto.getKey();
+            String bankKey = bankdto.getKey();
             accountEntityFacade.create(accounttype, personKey, bankKey);
-
-        } catch (NullPointerException e) {
-            logger.log(AccountLogger.AccountLoggerLevel.WARNING, "AccountLogicFacadeImpl.create",
-                    String.format("No such user or bank"));
-            throw new AccountLogicFacadeIllegalArgumentException("No such user or bank");
         } catch (HTTPHelperConnectionException e) {
             logger.log(AccountLogger.AccountLoggerLevel.ALERT, "AccountLogicFacadeImpl.create",
                     String.format("%s", e.getMessage()));
@@ -71,14 +70,15 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
             AccountLogicFacadeIllegalArgumentException,
             AccountLogicFacadeStorageException {
         try {
-            String personKey = jsonSerializer.fromJson(
+            PersonDTO persondto = jsonSerializer.fromJson(
                     http.get(FinalConstants.PERSON_ENDPOINT + "find.name", "name", name),
-                    PersonDTO.class).getKey();
+                    PersonDTO.class);
+            if(persondto == null) {
+                throw new AccountLogicFacadeIllegalArgumentException("could not find person");
+            }
+            String personKey = persondto.getKey();
             List<Account> accounts = accountEntityFacade.findAllByName(personKey);
             return jsonSerializer.toJson(accounts);
-        } catch (NullPointerException e) {
-            logger.log(e);
-            throw new AccountLogicFacadeIllegalArgumentException("No such Person");
         } catch (HTTPHelperConnectionException e) {
             logger.log(e);
             throw new AccountLogicFacadeIllegalArgumentException(e.toString());

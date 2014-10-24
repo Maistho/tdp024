@@ -136,4 +136,20 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
             em.close();
         }
     }
+
+    @Override
+    public Account findById(long account_id)
+            throws
+            AccountEntityFacadeIllegalArgumentException {
+        EntityManager em = EMF.getEntityManager();
+        try {
+            return em.find(AccountDB.class, account_id);
+        } catch (Exception e) {
+            logger.log(e);
+            throw new AccountEntityFacadeIllegalArgumentException(e.getMessage());
+        } finally {
+            em.close();
+        }
+
+    }
 }

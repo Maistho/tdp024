@@ -1,5 +1,7 @@
 package se.liu.ida.tdp024.account.logic.api.facade;
 
+import se.liu.ida.tdp024.account.data.api.entity.Account;
+
 
 public interface AccountLogicFacade {
     
@@ -38,7 +40,7 @@ public interface AccountLogicFacade {
             throws 
             AccountLogicFacadeIllegalArgumentException,
             AccountLogicFacadeStorageException;
-    
+     
     public void credit(long account, long amount)
             throws
             AccountLogicFacadeIllegalArgumentException,

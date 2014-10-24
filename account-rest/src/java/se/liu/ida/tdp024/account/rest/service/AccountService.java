@@ -75,11 +75,11 @@ public class AccountService {
             return Response.ok().entity("OK").build(); //TODO: change return?
         } catch (AccountLogicFacadeIllegalArgumentException e) {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Failed creating account", e.getMessage());
-            return Response.ok().entity("FAILED").build(); //TODO: change return
+            return Response.ok().entity(e.getMessage()).build(); //TODO: change return
         } catch (AccountLogicFacade.AccountLogicFacadeStorageException e) {
-            return Response.ok().entity("FAILED").build();
+            return Response.ok().entity(e.getMessage()).build();
         } catch (AccountLogicFacade.AccountLogicFacadeConnectionException e) {
-            return Response.ok().entity("FAILED").build();
+            return Response.ok().entity(e.getMessage()).build();
         }
 
     }
@@ -101,9 +101,9 @@ public class AccountService {
             String accounts = accountLogicFacade.find(name);
             return Response.ok().entity(accounts).build();
         } catch (AccountLogicFacade.AccountLogicFacadeIllegalArgumentException e) {
-            return Response.ok().entity("FAILED").build(); //TODO: change return
-        } catch (AccountLogicFacade.AccountLogicFacadeStorageException ex) {
-            return Response.ok().entity("FAILED").build(); //TODO: change return
+            return Response.status(Response.Status.BAD_REQUEST).entity("{'message':'not found'}").build();
+        } catch (AccountLogicFacade.AccountLogicFacadeStorageException e) {
+            return Response.ok().entity(e.getMessage()).build(); //TODO: change return
         }
 
     }

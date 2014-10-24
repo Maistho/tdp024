@@ -80,13 +80,15 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
             return jsonSerializer.toJson(accounts);
         } catch (NullPointerException e) {
             logger.log(e);
-            throw new AccountLogicFacadeIllegalArgumentException("no such user");
+            throw new AccountLogicFacadeIllegalArgumentException("No such Person");
         } catch (HTTPHelperConnectionException e) {
             logger.log(e);
             throw new AccountLogicFacadeIllegalArgumentException(e.toString());
         } catch (HTTPHelper.HTTPHelperMalformedURLException e) {
-            throw new AccountLogicFacadeIllegalArgumentException("malformedurl");
+            logger.log(e);
+            throw new AccountLogicFacadeIllegalArgumentException("Malformed URL");
         } catch (AccountEntityFacade.AccountEntityFacadeStorageException e) {
+            logger.log(e);
             throw new AccountLogicFacadeStorageException(e.getMessage());
         }
     }
@@ -107,5 +109,4 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
     public void debit(long account, long amount) throws AccountLogicFacadeIllegalArgumentException, AccountLogicFacadeStorageException, AccountLogicFacadeInsufficientHoldingsException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
 }

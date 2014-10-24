@@ -1,19 +1,29 @@
 package se.liu.ida.tdp024.account.data.api.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import se.liu.ida.tdp024.account.data.api.util.FinalConstants;
 
+public interface Transaction extends Serializable {
 
-public interface Transaction extends Serializable{
+    long getId();
+
+    Account getAccount();
+
+    long getAmount();
+
+    FinalConstants.TransactionTypes getTransactionType();
+
+    Date getCreated();
     
-    public long getId();
+    boolean getStatus();
+
+    void setAccount(Account account);
+
+    void setAmount(long amount);
+
+    void setTransactionType(FinalConstants.TransactionTypes transactionType);
     
-    public long getAccount();
-    public long getAmount();
-    public FinalConstants.TransactionTypes getTransactionType();
-    
-    public void setAccount(long account);
-    public void setAmount(long amount);
-    public void setTransactionType(FinalConstants.TransactionTypes transactionType);
-    
+    void setStatus(boolean status);
+
 }

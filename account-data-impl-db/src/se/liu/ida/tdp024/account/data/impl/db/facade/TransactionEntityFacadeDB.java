@@ -2,6 +2,7 @@ package se.liu.ida.tdp024.account.data.impl.db.facade;
 
 import java.util.List;
 import javax.persistence.EntityManager;
+import se.liu.ida.tdp024.account.data.api.entity.Account;
 import se.liu.ida.tdp024.account.data.api.entity.Transaction;
 import se.liu.ida.tdp024.account.data.api.facade.TransactionEntityFacade;
 import se.liu.ida.tdp024.account.data.api.util.FinalConstants;
@@ -14,14 +15,19 @@ public class TransactionEntityFacadeDB implements TransactionEntityFacade {
 
     private final AccountLogger logger = new AccountLoggerMonlog();
 
-    private void createTransaction(long account, long amount, FinalConstants.TransactionTypes transactionType)
+    private void createTransaction(Account account, long amount, FinalConstants.TransactionTypes transactionType, boolean status)
             throws
             TransactionEntityFacadeIllegalArgumentException,
             TransactionEntityFacadeStorageException {
 
+        if (account == null) {
+            logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Account null",
+                    "Account was null");
+            throw new TransactionEntityFacadeIllegalArgumentException("Account was null");
+        }
         if (amount < 0) {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Amount of debit less than 0",
-                    "Amount was '%d', less than 0");
+                    String.format("Amount was '%d', less than 0", amount));
             throw new TransactionEntityFacadeIllegalArgumentException("Amount less than 0");
         }
 
@@ -33,6 +39,7 @@ public class TransactionEntityFacadeDB implements TransactionEntityFacade {
         transaction.setTransactionType(transactionType);
         transaction.setAccount(account);
         transaction.setAmount(amount);
+        transaction.setStatus(status);
 
         try {
             em.persist(transaction);
@@ -46,20 +53,20 @@ public class TransactionEntityFacadeDB implements TransactionEntityFacade {
     }
 
     @Override
-    public void debit(long account, long amount)
+    public void debit(Account account, long amount, boolean status)
             throws
             TransactionEntityFacadeIllegalArgumentException,
             TransactionEntityFacadeStorageException {
-        createTransaction(account, amount, FinalConstants.TransactionTypes.DEBIT);
+        createTransaction(account, amount, FinalConstants.TransactionTypes.DEBIT, status);
 
     }
 
     @Override
-    public void credit(long account, long amount)
+    public void credit(Account account, long amount)
             throws
             TransactionEntityFacadeIllegalArgumentException,
             TransactionEntityFacadeStorageException {
-        createTransaction(account, amount, FinalConstants.TransactionTypes.CREDIT);
+        createTransaction(account, amount, FinalConstants.TransactionTypes.CREDIT, true);
     }
 
     @Override

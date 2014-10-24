@@ -56,11 +56,19 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
     }
 
     @Override
-    public List<Account> findAllByName(String key) {
+    public List<Account> findAllByName(String key)
+            throws
+            AccountEntityFacadeStorageException {
 
         EntityManager em = EMF.getEntityManager();
-        List<Account> results = em.createQuery("SELECT a FROM AccountDB a WHERE a.name = ?1")
-                .setParameter(1, key).getResultList();
+        List<Account> results;
+        try {
+            results = em.createQuery("SELECT a FROM AccountDB a WHERE a.name = ?1")
+                    .setParameter(1, key).getResultList();
+        } catch (Exception e) {
+            logger.log(e);
+            throw new AccountEntityFacadeStorageException(e.getMessage());
+        }
 
         em.close();
         return results;
@@ -82,6 +90,10 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Account not found",
                     String.format("account with id '%d' was not found", id));
             throw new AccountEntityFacadeIllegalArgumentException("Account not found");
+        } catch (NullPointerException e) {
+            logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Account not found",
+                    String.format("account with id '%d' was not found", id));
+            throw new AccountEntityFacadeIllegalArgumentException("Account not found");
         } catch (Exception e) {
             logger.log(e);
             throw new AccountEntityFacadeStorageException("Couldn't save credit");
@@ -91,11 +103,14 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
     }
 
     @Override
-    public void debit(long id, long amount) throws AccountEntityFacadeStorageException, AccountEntityFacadeInsufficientHoldingsException {
+    public void debit(long id, long amount)
+            throws AccountEntityFacadeStorageException,
+            AccountEntityFacadeInsufficientHoldingsException,
+            AccountEntityFacadeIllegalArgumentException {
         EntityManager em = EMF.getEntityManager();
         em.getTransaction().begin();
         try {
-            AccountDB account = em.find(AccountDB.class, id);
+            Account account = em.find(AccountDB.class, id);
             long holdings = account.getHoldings();
             if (holdings < amount) {
                 logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Not enough holdings",
@@ -104,10 +119,16 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
             }
             account.setHoldings(holdings - amount);
             em.getTransaction().commit();
+        } catch (AccountEntityFacadeInsufficientHoldingsException e) {
+            throw e;
         } catch (IllegalArgumentException e) {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Account not found",
                     String.format("Account with id '%d' was not found", id));
-            throw new AccountEntityFacadeStorageException("Account not found");
+            throw new AccountEntityFacadeIllegalArgumentException("Account not found");
+        } catch (NullPointerException e) {
+            logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Account not found",
+                    String.format("account with id '%d' was not found", id));
+            throw new AccountEntityFacadeIllegalArgumentException("Account not found");
         } catch (Exception e) {
             logger.log(e);
             throw new AccountEntityFacadeStorageException("Couldn't save credit");

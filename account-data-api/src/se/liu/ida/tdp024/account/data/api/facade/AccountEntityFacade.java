@@ -27,7 +27,9 @@ public interface AccountEntityFacade {
             AccountEntityFacadeIllegalArgumentException,
             AccountEntityFacadeStorageException;
     
-    List<Account> findAllByName(String key);
+    List<Account> findAllByName(String key)
+            throws
+            AccountEntityFacadeStorageException;
     
     void credit(long account, long amount)
             throws
@@ -37,5 +39,6 @@ public interface AccountEntityFacade {
     void debit(long account, long amount)
             throws
             AccountEntityFacadeStorageException,
-            AccountEntityFacadeInsufficientHoldingsException;
+            AccountEntityFacadeInsufficientHoldingsException,
+            AccountEntityFacadeIllegalArgumentException;
 }

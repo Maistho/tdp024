@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import se.liu.ida.tdp024.account.data.api.util.StorageFacade;
 import se.liu.ida.tdp024.account.data.impl.db.util.StorageFacadeDB;
+import se.liu.ida.tdp024.account.rest.service.AccountService;
 import se.liu.ida.tdp024.account.util.http.HTTPHelper;
 import se.liu.ida.tdp024.account.util.http.HTTPHelperImpl;
 
@@ -16,7 +17,8 @@ public class AccountServiceTest {
     private static final String ENDPOINT = "localhost:8080/account-rest/";
     
     //-- Units under test ---//
-    private StorageFacade storageFacade = new StorageFacadeDB();
+    private final AccountService accountService = new AccountService();
+    private final StorageFacade storageFacade = new StorageFacadeDB();
 
     @After
     public void tearDown() {

@@ -2,6 +2,7 @@ package tdp024.account.rest.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.ws.rs.core.Response;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -39,8 +40,8 @@ public class AccountServiceTest {
                 String name = "Marcus Bendtsen";
                 String bank = "SWEDBANK";
                 String accountType = "SAVINGS";
-                String response = httpHelper.get(ENDPOINT + "account/create/", "name", name, "bank", bank, "accounttype", accountType);
-                Assert.assertEquals("OK", response);
+                Response response = accountService.create(accountType, name, bank);
+                Assert.assertEquals(200, response.getStatus());
             }
             {
                 String name = "Marcus Bendtsen";

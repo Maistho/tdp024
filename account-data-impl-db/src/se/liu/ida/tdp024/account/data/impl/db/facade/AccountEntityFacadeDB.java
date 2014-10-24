@@ -2,6 +2,7 @@ package se.liu.ida.tdp024.account.data.impl.db.facade;
 
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import se.liu.ida.tdp024.account.data.api.facade.AccountEntityFacade;
 import se.liu.ida.tdp024.account.data.impl.db.util.EMF;
 import se.liu.ida.tdp024.account.data.api.entity.Account;
@@ -84,6 +85,7 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
         em.getTransaction().begin();
         try {
             AccountDB account = em.find(AccountDB.class, id);
+            em.lock(account, LockModeType.PESSIMISTIC_WRITE);
             account.setHoldings(account.getHoldings() + amount);
             em.getTransaction().commit();
         } catch (IllegalArgumentException e) {
@@ -111,6 +113,8 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
         em.getTransaction().begin();
         try {
             Account account = em.find(AccountDB.class, id);
+            em.lock(account, LockModeType.PESSIMISTIC_WRITE);
+
             long holdings = account.getHoldings();
             if (holdings < amount) {
                 logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Not enough holdings",

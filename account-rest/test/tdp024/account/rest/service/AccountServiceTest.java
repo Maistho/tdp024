@@ -290,7 +290,7 @@ public class AccountServiceTest {
             String name = "Jakob Pogulis";
             String bank = "SWEDBANK";
             String accountType = "SAVINGS";
-            Response response = accountService.create(name, bank, accountType);
+            Response response = accountService.create(accountType, name, bank);
             Assert.assertEquals("OK", response.getEntity().toString());
             Assert.assertEquals(200, response.getStatus());
         }

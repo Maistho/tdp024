@@ -82,6 +82,7 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
             AccountEntityFacadeIllegalArgumentException {
         EntityManager em = EMF.getEntityManager();
         em.getTransaction().begin();
+        
         try {
             AccountDB account = em.find(AccountDB.class, id); //, LockModeType.PESSIMISTIC_WRITE);
             if (account == null) {

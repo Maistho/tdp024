@@ -1,6 +1,7 @@
 package se.liu.ida.tdp024.account.data.api.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 public interface Account extends Serializable {
 
@@ -19,6 +20,8 @@ public interface Account extends Serializable {
 
     public long getId();
 
+    public List<Transaction> getTransactions();
+    
     public String getAccountType();
 
     public void setAccountType(String accounttype)

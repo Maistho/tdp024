@@ -115,7 +115,7 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
         EntityManager em = EMF.getEntityManager();
         em.getTransaction().begin();
         try {
-            Account account = em.find(AccountDB.class, id, LockModeType.PESSIMISTIC_WRITE);
+            Account account = em.find(AccountDB.class, id); // LockModeType.PESSIMISTIC_WRITE);
             if (account == null) {
                 throw new AccountEntityFacadeIllegalArgumentException("Could not find account");
             }

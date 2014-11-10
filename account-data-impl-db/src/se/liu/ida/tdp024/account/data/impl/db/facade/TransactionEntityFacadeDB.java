@@ -1,5 +1,6 @@
 package se.liu.ida.tdp024.account.data.impl.db.facade;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import se.liu.ida.tdp024.account.data.api.entity.Account;
@@ -85,8 +86,10 @@ public class TransactionEntityFacadeDB implements TransactionEntityFacade {
         EntityManager em = EMF.getEntityManager();
         List<Transaction> results = null;
         try {
-            results = em.createQuery("SELECT t FROM TransactionDB t WHERE t.account = ?1")
-                    .setParameter(1, account).getResultList();
+            results = em.find(Account.class, account).getTransactions();
+            if (results == null) {
+                results = new ArrayList<Transaction>();
+            }
         } catch (IllegalArgumentException e) {
             logger.log(e);
             throw new TransactionEntityFacadeIllegalArgumentException(e.getMessage());

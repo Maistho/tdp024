@@ -36,6 +36,8 @@ public class AccountLoggerMonlog implements AccountLogger {
         } catch (HTTPHelper.HTTPHelperMalformedURLException e) {
                 
         }
+                    System.out.println(throwable.getMessage() + stackTrace.toString());
+
     }
 
     @Override
@@ -55,5 +57,6 @@ public class AccountLoggerMonlog implements AccountLogger {
             } catch (HTTPHelper.HTTPHelperMalformedURLException e) {
                 
             }
+            System.out.println(shortMessage + longMessage);
     }
 }

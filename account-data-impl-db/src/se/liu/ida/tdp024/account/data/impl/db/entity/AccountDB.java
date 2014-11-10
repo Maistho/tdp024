@@ -19,6 +19,11 @@ public class AccountDB implements Account {
     
     @OneToMany(mappedBy= "account", targetEntity=TransactionDB.class)
     List<Transaction> transactions;
+    
+    @Override
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
 
     private String personKey;
     private String bankKey;

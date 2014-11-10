@@ -75,22 +75,17 @@ public class TransactionLogicFacadeImpl implements TransactionLogicFacade {
             throws
             TransactionLogicFacadeIllegalArgumentException,
             TransactionLogicFacadeStorageException {
-        try {
-            accountLogicFacade.credit(account_id, amount);
-        } catch (AccountLogicFacade.AccountLogicFacadeIllegalArgumentException e) {
-            throw new TransactionLogicFacadeIllegalArgumentException(e.getMessage());
-        } catch (AccountLogicFacade.AccountLogicFacadeStorageException e) {
-            logger.log(e);
-            throw new TransactionLogicFacadeStorageException(e.getMessage());
-        }
+        
         try {
             Account account = accountEntityFacade.findById(account_id);
-            if (account != null) {
-                transactionEntityFacade.credit(account_id, amount);
-            } else {
+            if (account == null) {
+                //TODO: Log
                 throw new TransactionLogicFacadeIllegalArgumentException(("No such account"));
             }
+            transactionEntityFacade.credit(account_id, amount);
+            
         } catch (TransactionEntityFacade.TransactionEntityFacadeIllegalArgumentException e) {
+            //TODO: Log
             throw new TransactionLogicFacadeIllegalArgumentException(e.getMessage());
         } catch (TransactionEntityFacade.TransactionEntityFacadeStorageException e) {
             logger.log(e);
@@ -99,6 +94,19 @@ public class TransactionLogicFacadeImpl implements TransactionLogicFacade {
             //TODO: replace logger
             Logger.getLogger(TransactionLogicFacadeImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        
+        try {
+            accountLogicFacade.credit(account_id, amount);
+        } catch (AccountLogicFacade.AccountLogicFacadeIllegalArgumentException e) {
+            //TODO: Log
+            throw new TransactionLogicFacadeIllegalArgumentException(e.getMessage());
+        } catch (AccountLogicFacade.AccountLogicFacadeStorageException e) {
+            logger.log(e);
+            throw new TransactionLogicFacadeStorageException(e.getMessage());
+        }
+        
+        
     }
     
     @Override

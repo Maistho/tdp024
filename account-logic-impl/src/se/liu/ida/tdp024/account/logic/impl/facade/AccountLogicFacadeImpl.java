@@ -95,12 +95,12 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
     public void credit(long account, long amount) throws AccountLogicFacadeIllegalArgumentException, AccountLogicFacadeStorageException {
         try {
             accountEntityFacade.credit(account, amount);
-        } catch (AccountEntityFacade.AccountEntityFacadeStorageException e) {
-            logger.log(e);
-            throw new AccountLogicFacadeStorageException(e.getMessage());
         } catch (AccountEntityFacadeIllegalArgumentException e) {
             logger.log(e);
             throw new AccountLogicFacadeIllegalArgumentException(e.getMessage());
+        } catch (AccountEntityFacade.AccountEntityFacadeStorageException e) {
+            logger.log(e);
+            throw new AccountLogicFacadeStorageException(e.getMessage());
         }
     }
 

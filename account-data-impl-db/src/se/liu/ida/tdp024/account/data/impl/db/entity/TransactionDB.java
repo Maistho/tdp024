@@ -5,7 +5,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
+import se.liu.ida.tdp024.account.data.api.entity.Account;
 import se.liu.ida.tdp024.account.data.api.entity.Transaction;
 import se.liu.ida.tdp024.account.data.api.util.FinalConstants;
 
@@ -20,7 +22,8 @@ public class TransactionDB implements Transaction {
     private final Date created;
     private boolean status;
 
-    private long account;
+    @ManyToOne(targetEntity=AccountDB.class)
+    private Account account;
     
     private long amount;
     private FinalConstants.TransactionTypes transactionType;
@@ -35,7 +38,7 @@ public class TransactionDB implements Transaction {
     }
 
     @Override
-    public long getAccount() {
+    public Account getAccount() {
         return account;
     }
 
@@ -45,7 +48,7 @@ public class TransactionDB implements Transaction {
     }
 
     @Override
-    public void setAccount(long account) {
+    public void setAccount(Account account) {
         this.account = account;
     }
 

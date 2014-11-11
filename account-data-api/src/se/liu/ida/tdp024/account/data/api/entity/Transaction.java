@@ -15,7 +15,7 @@ public interface Transaction extends Serializable {
     FinalConstants.TransactionTypes getTransactionType();
 
     Date getCreated();
-    
+
     boolean getStatus();
 
     void setAccount(Account account);
@@ -23,7 +23,7 @@ public interface Transaction extends Serializable {
     void setAmount(long amount);
 
     void setTransactionType(FinalConstants.TransactionTypes transactionType);
-    
+
     void setStatus(boolean status);
 
 }

@@ -11,32 +11,40 @@ public interface Account extends Serializable {
         CHECK
     }
 
-    public class AccountIllegalArgumentException extends Exception {
+    class AccountIllegalArgumentException extends Exception {
 
         public AccountIllegalArgumentException(String message) {
             super(message);
         }
+
+        public AccountIllegalArgumentException(String message, Exception e) {
+            super(message, e);
+        }
     }
 
-    public long getId();
+    long getId();
 
-    public List<Transaction> getTransactions();
-    
-    public String getAccountType();
+    List<Transaction> getTransactions();
 
-    public void setAccountType(String accounttype)
+    void setTransactions(List<Transaction> transactions);
+
+    void addTransaction(Transaction transaction);
+
+    String getAccountType();
+
+    void setAccountType(String accounttype)
             throws
             AccountIllegalArgumentException;
 
-    public String getPersonKey();
+    String getPersonKey();
 
-    public void setPersonKey(String name);
+    void setPersonKey(String name);
 
-    public String getBankKey();
+    String getBankKey();
 
-    public void setBankKey(String bank);
+    void setBankKey(String bank);
 
-    public long getHoldings();
+    long getHoldings();
 
-    public void setHoldings(long holdings);
+    void setHoldings(long holdings);
 }

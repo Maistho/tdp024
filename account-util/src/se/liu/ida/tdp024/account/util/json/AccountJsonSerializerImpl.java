@@ -15,7 +15,7 @@ public class AccountJsonSerializerImpl implements AccountJsonSerializer {
     //
     private AccountLogger todoLogger = new AccountLoggerImpl();
     private ObjectMapper mapper;
-    
+
     public AccountJsonSerializerImpl() {
         mapper = new ObjectMapper();
         mapper.setDateFormat(dateFormat);

@@ -5,31 +5,43 @@ import se.liu.ida.tdp024.account.data.api.entity.Transaction;
 
 public interface TransactionEntityFacade {
 
-    public class TransactionEntityFacadeIllegalArgumentException extends Exception {
+    class TransactionEntityFacadeIllegalArgumentException extends Exception {
 
         public TransactionEntityFacadeIllegalArgumentException(String message) {
             super(message);
         }
+
+        public TransactionEntityFacadeIllegalArgumentException(Exception e) {
+            super(e);
+        }
     }
 
-    public class TransactionEntityFacadeStorageException extends Exception {
+    class TransactionEntityFacadeStorageException extends Exception {
 
         public TransactionEntityFacadeStorageException(String message) {
             super(message);
         }
+
+        public TransactionEntityFacadeStorageException(String message, Exception e) {
+            super(message, e);
+        }
+
+        public TransactionEntityFacadeStorageException(Exception e) {
+            super(e);
+        }
     }
 
-    public void debit(long account, long amount, boolean status)
+    void debit(long account, long amount, boolean status)
             throws
             TransactionEntityFacadeIllegalArgumentException,
             TransactionEntityFacadeStorageException;
 
-    public void credit(long account, long amount)
+    void credit(long account, long amount)
             throws
             TransactionEntityFacadeIllegalArgumentException,
             TransactionEntityFacadeStorageException;
 
-    public List<Transaction> findAllFromAccount(long account)
+    List<Transaction> findAllFromAccount(long account)
             throws
             TransactionEntityFacadeIllegalArgumentException;
 

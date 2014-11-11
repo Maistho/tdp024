@@ -52,8 +52,6 @@ public class AccountDTO {
         }
         return true;
     }
-    
-    
 
     public long getId() {
         return id;

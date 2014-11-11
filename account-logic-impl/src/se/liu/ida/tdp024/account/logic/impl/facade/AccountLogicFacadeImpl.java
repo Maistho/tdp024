@@ -42,7 +42,7 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
             PersonDTO bankdto = jsonSerializer.fromJson(
                     http.get(FinalConstants.BANK_ENDPOINT + "find.name", "name", bank),
                     PersonDTO.class);
-            if(persondto == null || bankdto == null) {
+            if (persondto == null || bankdto == null) {
                 throw new AccountLogicFacadeIllegalArgumentException("could not find person or bank");
             }
             String personKey = persondto.getKey();
@@ -51,16 +51,16 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
         } catch (HTTPHelperConnectionException e) {
             logger.log(AccountLogger.AccountLoggerLevel.ALERT, "AccountLogicFacadeImpl.create",
                     String.format("%s", e.getMessage()));
-            throw new AccountLogicFacadeConnectionException(e.getMessage());
+            throw new AccountLogicFacadeConnectionException(e);
         } catch (HTTPHelper.HTTPHelperMalformedURLException e) {
-
+            //TODO: do something
         } catch (AccountEntityFacadeIllegalArgumentException e) {
             //TODO: log
-            throw new AccountLogicFacadeIllegalArgumentException(e.toString()); //TODO
+            throw new AccountLogicFacadeIllegalArgumentException(e); //TODO
         } catch (AccountEntityFacade.AccountEntityFacadeStorageException e) {
             logger.log(AccountLogger.AccountLoggerLevel.CRITICAL, "AccountLogicFacadeImpl.create",
                     String.format("%s", e.getMessage()));
-            throw new AccountLogicFacadeStorageException(e.getMessage());
+            throw new AccountLogicFacadeStorageException(e);
         }
     }
 
@@ -73,7 +73,7 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
             PersonDTO persondto = jsonSerializer.fromJson(
                     http.get(FinalConstants.PERSON_ENDPOINT + "find.name", "name", name),
                     PersonDTO.class);
-            if(persondto == null) {
+            if (persondto == null) {
                 throw new AccountLogicFacadeIllegalArgumentException("could not find person");
             }
             String personKey = persondto.getKey();
@@ -81,13 +81,13 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
             return jsonSerializer.toJson(accounts);
         } catch (HTTPHelperConnectionException e) {
             logger.log(e);
-            throw new AccountLogicFacadeIllegalArgumentException(e.toString());
+            throw new AccountLogicFacadeIllegalArgumentException(e);
         } catch (HTTPHelper.HTTPHelperMalformedURLException e) {
             logger.log(e);
-            throw new AccountLogicFacadeIllegalArgumentException("Malformed URL");
+            throw new AccountLogicFacadeIllegalArgumentException("Malformed URL", e);
         } catch (AccountEntityFacade.AccountEntityFacadeStorageException e) {
             logger.log(e);
-            throw new AccountLogicFacadeStorageException(e.getMessage());
+            throw new AccountLogicFacadeStorageException(e);
         }
     }
 
@@ -97,10 +97,10 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
             accountEntityFacade.credit(account, amount);
         } catch (AccountEntityFacadeIllegalArgumentException e) {
             logger.log(e);
-            throw new AccountLogicFacadeIllegalArgumentException(e.getMessage());
+            throw new AccountLogicFacadeIllegalArgumentException(e);
         } catch (AccountEntityFacade.AccountEntityFacadeStorageException e) {
             logger.log(e);
-            throw new AccountLogicFacadeStorageException(e.getMessage());
+            throw new AccountLogicFacadeStorageException(e);
         }
     }
 
@@ -113,13 +113,13 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
         try {
             accountEntityFacade.debit(account, amount);
         } catch (AccountEntityFacade.AccountEntityFacadeStorageException e) {
-            throw new AccountLogicFacadeStorageException(e.getMessage());
+            throw new AccountLogicFacadeStorageException(e);
         } catch (AccountEntityFacade.AccountEntityFacadeInsufficientHoldingsException e) {
             logger.log(AccountLogger.AccountLoggerLevel.ALERT, "Not enough holdings on account",
                     String.format("Not enough holdings on account '%d' to make debit of '%d'", account, amount));
-            throw new AccountLogicFacadeInsufficientHoldingsException(e.getMessage());
+            throw new AccountLogicFacadeInsufficientHoldingsException(e);
         } catch (AccountEntityFacadeIllegalArgumentException e) {
-            throw new AccountLogicFacadeIllegalArgumentException(e.getMessage());
+            throw new AccountLogicFacadeIllegalArgumentException(e);
         }
 
     }

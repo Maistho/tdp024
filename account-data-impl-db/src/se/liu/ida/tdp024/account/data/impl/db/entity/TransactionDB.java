@@ -22,9 +22,9 @@ public class TransactionDB implements Transaction {
     private final Date created;
     private boolean status;
 
-    @ManyToOne(targetEntity=AccountDB.class)
+    @ManyToOne(targetEntity = AccountDB.class)
     private Account account;
-    
+
     private long amount;
     private FinalConstants.TransactionTypes transactionType;
 
@@ -69,7 +69,7 @@ public class TransactionDB implements Transaction {
 
     @Override
     public Date getCreated() {
-        return created;
+        return new Date(created.getTime());
     }
 
     @Override

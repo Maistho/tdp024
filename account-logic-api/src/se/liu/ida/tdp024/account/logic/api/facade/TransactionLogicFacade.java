@@ -1,33 +1,43 @@
 package se.liu.ida.tdp024.account.logic.api.facade;
 
+import se.liu.ida.tdp024.account.data.api.facade.AccountEntityFacade;
+import se.liu.ida.tdp024.account.data.api.facade.TransactionEntityFacade;
+
 public interface TransactionLogicFacade {
 
-    public class TransactionLogicFacadeIllegalArgumentException extends Exception {
+    class TransactionLogicFacadeIllegalArgumentException extends Exception {
 
         public TransactionLogicFacadeIllegalArgumentException(String message) {
             super(message);
         }
+
+        public TransactionLogicFacadeIllegalArgumentException(Exception e) {
+            super(e);
+        }
     }
 
-    public class TransactionLogicFacadeStorageException extends Exception {
+    class TransactionLogicFacadeStorageException extends Exception {
 
         public TransactionLogicFacadeStorageException(String message) {
             super(message);
         }
+
+        public TransactionLogicFacadeStorageException(Exception e) {
+            super(e);
+        }
     }
-    
 
-    public void debit(long account, long amount)
+    void debit(long account, long amount)
             throws
             TransactionLogicFacadeIllegalArgumentException,
             TransactionLogicFacadeStorageException;
 
-    public void credit(long account, long amount)
+    void credit(long account, long amount)
             throws
             TransactionLogicFacadeIllegalArgumentException,
             TransactionLogicFacadeStorageException;
 
-    public String findAllFromAccount(long account)
+    String findAllFromAccount(long account)
             throws
             TransactionLogicFacadeIllegalArgumentException;
 

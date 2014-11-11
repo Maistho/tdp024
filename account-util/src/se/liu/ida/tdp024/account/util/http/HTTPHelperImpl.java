@@ -17,9 +17,8 @@ public class HTTPHelperImpl implements HTTPHelper {
 
     @Override
     public String get(String endpoint, String... parameters)
-    throws HTTPHelperConnectionException,
-            HTTPHelperMalformedURLException
-    {
+            throws HTTPHelperConnectionException,
+            HTTPHelperMalformedURLException {
 
         String urlToRead = createURL(endpoint, parameters);
 
@@ -28,7 +27,7 @@ public class HTTPHelperImpl implements HTTPHelper {
         BufferedReader rd;
         String line;
         String result = "";
-        
+
         try {
             url = new URL(urlToRead);
             conn = (HttpURLConnection) url.openConnection();
@@ -45,17 +44,15 @@ public class HTTPHelperImpl implements HTTPHelper {
             accountLogger.log(e);
             throw new HTTPHelperConnectionException("Error reading data");
         }
-        
+
         return result;
 
     }
 
     @Override
     public String postJSON(String endpoint, String[] queryParameters, String[] dataParameters)
-    throws HTTPHelperConnectionException,
-            HTTPHelperMalformedURLException
-    {
-
+            throws HTTPHelperConnectionException,
+            HTTPHelperMalformedURLException {
 
         String urlToRead = createURL(endpoint, queryParameters);
         String dataPayload = createJSONPayload(dataParameters);
@@ -86,7 +83,6 @@ public class HTTPHelperImpl implements HTTPHelper {
                 return builder.toString();
 
             } else {
-
 
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getErrorStream(), "utf-8"));
                 String line;
@@ -154,7 +150,7 @@ public class HTTPHelperImpl implements HTTPHelper {
         }
 
         dataBuilder.append("}");
-        
+
         String safeJSON = dataBuilder.toString().replaceAll("\\\n", "\\\\n");
         return safeJSON;
 

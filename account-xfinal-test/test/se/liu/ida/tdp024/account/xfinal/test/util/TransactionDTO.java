@@ -1,7 +1,7 @@
 package se.liu.ida.tdp024.account.xfinal.test.util;
 
 public class TransactionDTO {
-    
+
     private long id;
     private String type;
     private long amount;
@@ -56,6 +56,5 @@ public class TransactionDTO {
     public void setAccount(AccountDTO account) {
         this.account = account;
     }
-    
-    
+
 }

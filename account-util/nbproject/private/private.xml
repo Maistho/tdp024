@@ -3,9 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/maistho/prog/tdp024/account-util/src/se/liu/ida/tdp024/account/util/logger/AccountLoggerMonlog.java</file>
-            <file>file:/home/maistho/prog/tdp024/account-util/src/se/liu/ida/tdp024/account/util/http/HTTPHelperImpl.java</file>
-            <file>file:/home/maistho/prog/tdp024/account-util/src/se/liu/ida/tdp024/account/util/http/HTTPHelper.java</file>
+            <file>file:/home/maistho/prog/tdp024/account-util/src/se/liu/ida/tdp024/account/util/logger/AccountLoggerImpl.java</file>
+            <file>file:/home/maistho/prog/tdp024/account-util/src/se/liu/ida/tdp024/account/util/json/AccountJsonSerializer.java</file>
+            <file>file:/home/maistho/prog/tdp024/account-util/src/se/liu/ida/tdp024/account/util/json/AccountJsonSerializerImpl.java</file>
         </group>
     </open-files>
 </project-private>

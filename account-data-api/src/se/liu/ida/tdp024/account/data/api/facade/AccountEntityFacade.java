@@ -10,28 +10,12 @@ public interface AccountEntityFacade {
         public AccountEntityFacadeIllegalArgumentException(String message) {
             super(message);
         }
-
-        public AccountEntityFacadeIllegalArgumentException(Exception e) {
-            super(e);
-        }
-        
-        public AccountEntityFacadeIllegalArgumentException(String message, Exception e) {
-            super(e);
-        }
     }
 
     class AccountEntityFacadeStorageException extends Exception {
 
         public AccountEntityFacadeStorageException(String message) {
             super(message);
-        }
-
-        public AccountEntityFacadeStorageException(Exception e) {
-            super(e);
-        }
-
-        public AccountEntityFacadeStorageException(String message, Exception e) {
-            super(message, e);
         }
     }
 

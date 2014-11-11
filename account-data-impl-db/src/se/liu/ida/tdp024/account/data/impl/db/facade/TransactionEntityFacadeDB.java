@@ -45,7 +45,7 @@ public class TransactionEntityFacadeDB implements TransactionEntityFacade {
             }
         } catch (AccountEntityFacade.AccountEntityFacadeIllegalArgumentException e) {
             logger.log(e);
-            throw new TransactionEntityFacadeStorageException(e.getMessage());
+            throw new TransactionEntityFacadeStorageException(e);
         }
         transaction.setTransactionType(transactionType);
         transaction.setAmount(amount);
@@ -56,7 +56,7 @@ public class TransactionEntityFacadeDB implements TransactionEntityFacade {
             em.getTransaction().commit();
         } catch (Exception e) {
             logger.log(e);
-            throw new TransactionEntityFacadeStorageException("Error storing transaction");
+            throw new TransactionEntityFacadeStorageException("Error storing transaction", e);
         } finally {
             em.close();
         }
@@ -92,7 +92,7 @@ public class TransactionEntityFacadeDB implements TransactionEntityFacade {
             }
         } catch (IllegalArgumentException e) {
             logger.log(e);
-            throw new TransactionEntityFacadeIllegalArgumentException(e.getMessage());
+            throw new TransactionEntityFacadeIllegalArgumentException(e);
         } finally {
             em.close();
         }

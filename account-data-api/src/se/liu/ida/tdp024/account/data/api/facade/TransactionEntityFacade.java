@@ -10,12 +10,24 @@ public interface TransactionEntityFacade {
         public TransactionEntityFacadeIllegalArgumentException(String message) {
             super(message);
         }
+
+        public TransactionEntityFacadeIllegalArgumentException(Exception e) {
+            super(e);
+        }
     }
 
     class TransactionEntityFacadeStorageException extends Exception {
 
         public TransactionEntityFacadeStorageException(String message) {
             super(message);
+        }
+
+        public TransactionEntityFacadeStorageException(String message, Exception e) {
+            super(message, e);
+        }
+
+        public TransactionEntityFacadeStorageException(Exception e) {
+            super(e);
         }
     }
 

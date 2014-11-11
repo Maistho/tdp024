@@ -42,7 +42,7 @@ public class AccountService {
         logger.log(AccountLogger.AccountLoggerLevel.DEBUG, "Access /create", "Requested '/create'");
         String reason = "";
         Boolean illegalArgument = false;
-        if (accounttype == null || accounttype.equals("")) { // || name == null || bank == null) {
+        if (accounttype == null || accounttype.equals("")) {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "NULL value in /create",
                     String.format("Invalid argument accounttype: null"));
             reason += "AccountType is null, ";
@@ -68,7 +68,7 @@ public class AccountService {
         try {
             accountLogicFacade.create(accounttype, name, bank);
             logger.log(AccountLogger.AccountLoggerLevel.INFO, "Created new account",
-                    String.format("New Account with:\nAccountType: %s\nName: %s\nBank: %s", accounttype, name, bank));
+                    String.format("New Account with:\nAccountType: %s%nName: %s\nBank: %s", accounttype, name, bank));
             return Response.ok().entity("OK").build();
 
         } catch (AccountLogicFacadeIllegalArgumentException e) {

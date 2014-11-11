@@ -23,26 +23,26 @@ import se.liu.ida.tdp024.account.util.logger.AccountLoggerMonlog;
  * @author maistho
  */
 public class TransactionLogicFacadeImpl implements TransactionLogicFacade {
-    
-    private TransactionEntityFacade transactionEntityFacade;
-    private AccountJsonSerializer jsonSerializer = new AccountJsonSerializerImpl();
-    private AccountLogicFacade accountLogicFacade;
-    private AccountEntityFacade accountEntityFacade = new AccountEntityFacadeDB();
-    private AccountLogger logger = new AccountLoggerMonlog();
-    
+
+    private final TransactionEntityFacade transactionEntityFacade;
+    private final AccountJsonSerializer jsonSerializer = new AccountJsonSerializerImpl();
+    private final AccountLogicFacade accountLogicFacade;
+    private final AccountEntityFacade accountEntityFacade = new AccountEntityFacadeDB();
+    private final AccountLogger logger = new AccountLoggerMonlog();
+
     public TransactionLogicFacadeImpl(TransactionEntityFacade transactionEntityFacade, AccountLogicFacade accountLogicFacade) {
         this.transactionEntityFacade = transactionEntityFacade;
         this.accountLogicFacade = accountLogicFacade;
     }
-    
+
     @Override
-    public void debit(long account_id, long amount)
+    public void debit(long accountID, long amount)
             throws
             TransactionLogicFacadeIllegalArgumentException,
             TransactionLogicFacadeStorageException {
         boolean status = true;
         try {
-            accountLogicFacade.debit(account_id, amount);
+            accountLogicFacade.debit(accountID, amount);
         } catch (AccountLogicFacade.AccountLogicFacadeIllegalArgumentException ex) {
             //TODO: logs remove them
             Logger.getLogger(TransactionLogicFacadeImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -52,63 +52,61 @@ public class TransactionLogicFacadeImpl implements TransactionLogicFacade {
             status = false;
         }
         try {
-            
-            Account account = accountEntityFacade.findById(account_id);
+
+            Account account = accountEntityFacade.findById(accountID);
             if (account != null) {
-                transactionEntityFacade.debit(account_id, amount, status);
+                transactionEntityFacade.debit(accountID, amount, status);
             } else {
                 throw new TransactionLogicFacadeIllegalArgumentException("No such account");
             }
-            
+
         } catch (AccountEntityFacade.AccountEntityFacadeIllegalArgumentException e) {
             //TODO: log stuff
-            throw new TransactionLogicFacadeIllegalArgumentException(e.getMessage());
+            throw new TransactionLogicFacadeIllegalArgumentException(e);
         } catch (TransactionEntityFacade.TransactionEntityFacadeIllegalArgumentException e) {
-            throw new TransactionLogicFacadeIllegalArgumentException(e.getMessage());
+            throw new TransactionLogicFacadeIllegalArgumentException(e);
         } catch (TransactionEntityFacade.TransactionEntityFacadeStorageException e) {
-            throw new TransactionLogicFacadeStorageException(e.getMessage());
+            throw new TransactionLogicFacadeStorageException(e);
         }
     }
-    
+
     @Override
-    public void credit(long account_id, long amount)
+    public void credit(long accountID, long amount)
             throws
             TransactionLogicFacadeIllegalArgumentException,
             TransactionLogicFacadeStorageException {
-        
+
         try {
-            Account account = accountEntityFacade.findById(account_id);
+            Account account = accountEntityFacade.findById(accountID);
             if (account == null) {
                 //TODO: Log
                 throw new TransactionLogicFacadeIllegalArgumentException(("No such account"));
             }
-            transactionEntityFacade.credit(account_id, amount);
-            
+            transactionEntityFacade.credit(accountID, amount);
+
         } catch (TransactionEntityFacade.TransactionEntityFacadeIllegalArgumentException e) {
             //TODO: Log
-            throw new TransactionLogicFacadeIllegalArgumentException(e.getMessage());
+            throw new TransactionLogicFacadeIllegalArgumentException(e);
         } catch (TransactionEntityFacade.TransactionEntityFacadeStorageException e) {
             logger.log(e);
-            throw new TransactionLogicFacadeStorageException(e.getMessage());
+            throw new TransactionLogicFacadeStorageException(e);
         } catch (AccountEntityFacade.AccountEntityFacadeIllegalArgumentException ex) {
             //TODO: replace logger
             Logger.getLogger(TransactionLogicFacadeImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        
+
         try {
-            accountLogicFacade.credit(account_id, amount);
+            accountLogicFacade.credit(accountID, amount);
         } catch (AccountLogicFacade.AccountLogicFacadeIllegalArgumentException e) {
             //TODO: Log
-            throw new TransactionLogicFacadeIllegalArgumentException(e.getMessage());
+            throw new TransactionLogicFacadeIllegalArgumentException(e);
         } catch (AccountLogicFacade.AccountLogicFacadeStorageException e) {
             logger.log(e);
-            throw new TransactionLogicFacadeStorageException(e.getMessage());
+            throw new TransactionLogicFacadeStorageException(e);
         }
-        
-        
+
     }
-    
+
     @Override
     public String findAllFromAccount(long account)
             throws
@@ -116,8 +114,8 @@ public class TransactionLogicFacadeImpl implements TransactionLogicFacade {
         try {
             return jsonSerializer.toJson(transactionEntityFacade.findAllFromAccount(account));
         } catch (TransactionEntityFacade.TransactionEntityFacadeIllegalArgumentException e) {
-            throw new TransactionLogicFacadeIllegalArgumentException(e.getMessage());
+            throw new TransactionLogicFacadeIllegalArgumentException(e);
         }
     }
-    
+
 }

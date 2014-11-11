@@ -1520,8 +1520,8 @@ exists or setup the property manually. For example like this:
     <target depends="init,-pre-debug-fix,-do-debug-fix-test" if="netbeans.home" name="debug-fix-test"/>
     <!--
                 
-                CLEANUP SECTION
-            -->
+        CLEANUP SECTION
+    -->
     <target depends="init" name="deps-clean" unless="no.deps">
         <ant antfile="${project.account-data-api}/build.xml" inheritall="false" target="clean"/>
         <ant antfile="${project.account-data-impl-db}/build.xml" inheritall="false" target="clean"/>

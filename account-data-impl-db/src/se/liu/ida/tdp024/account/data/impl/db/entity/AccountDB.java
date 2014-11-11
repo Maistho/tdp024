@@ -18,7 +18,16 @@ public class AccountDB implements Account {
     private long holdings;
     
     @OneToMany(mappedBy= "account", targetEntity=TransactionDB.class)
-    List<Transaction> transactions;
+    private List<Transaction> transactions;
+    
+    @Override
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
+    }
+    @Override
+    public void addTransaction(Transaction transaction) {
+        transactions.add(transaction);
+    }
     
     @Override
     public List<Transaction> getTransactions() {
@@ -42,7 +51,7 @@ public class AccountDB implements Account {
             this.accountType = Account.AccountTypes.valueOf(accounttype);
 
         } catch (IllegalArgumentException e) {
-            throw new Account.AccountIllegalArgumentException("No such account type");
+            throw new Account.AccountIllegalArgumentException("No such account type", e);
         }
     }
 

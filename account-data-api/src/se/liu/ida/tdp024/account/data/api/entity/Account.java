@@ -16,11 +16,19 @@ public interface Account extends Serializable {
         public AccountIllegalArgumentException(String message) {
             super(message);
         }
+
+        public AccountIllegalArgumentException(String message, Exception e) {
+            super(message, e);
+        }
     }
 
     long getId();
 
     List<Transaction> getTransactions();
+    
+    void setTransactions(List<Transaction> transactions);
+    
+    void addTransaction(Transaction transaction);
 
     String getAccountType();
 

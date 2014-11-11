@@ -5,6 +5,8 @@
         <group>
             <file>file:/home/maistho/prog/tdp024/account-logic-api/src/se/liu/ida/tdp024/account/logic/api/facade/TransactionLogicFacade.java</file>
             <file>file:/home/maistho/prog/tdp024/account-logic-api/src/se/liu/ida/tdp024/account/logic/api/facade/AccountLogicFacade.java</file>
+            <file>file:/home/maistho/prog/tdp024/account-logic-api/src/se/liu/ida/tdp024/account/logic/api/util/PersonDTO.java</file>
+            <file>file:/home/maistho/prog/tdp024/account-logic-api/src/se/liu/ida/tdp024/account/logic/api/util/FinalConstants.java</file>
         </group>
     </open-files>
 </project-private>

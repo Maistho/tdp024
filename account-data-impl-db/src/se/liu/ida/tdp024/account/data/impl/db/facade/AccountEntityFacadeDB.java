@@ -32,8 +32,8 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
         } catch (Account.AccountIllegalArgumentException e) {
 
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "AccountEntityFacade.create",
-                    String.format("No such accounttype: %s%n%s", accounttype, e.getMessage()));
-            throw new AccountEntityFacadeIllegalArgumentException(e);
+                    String.format("No such accounttype: %s\n%s", accounttype, e.getMessage()));
+            throw new AccountEntityFacadeIllegalArgumentException(e.getMessage());
         }
 
         account.setPersonKey(name);
@@ -41,13 +41,18 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
 
         try {
             em.persist(account);
+        } catch (Exception e) {
+            logger.log(e);
+            throw new AccountEntityFacadeStorageException("Error storing account");
+        }
+
+        try {
             em.getTransaction().commit();
         } catch (Exception e) {
             logger.log(e);
-            throw new AccountEntityFacadeStorageException("Could not store account", e);
-        } finally {
-            em.close();
+            throw new AccountEntityFacadeStorageException("Could not store account");
         }
+        em.close();
     }
 
     @Override
@@ -62,7 +67,7 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
                     .setParameter(1, key).getResultList();
         } catch (Exception e) {
             logger.log(e);
-            throw new AccountEntityFacadeStorageException(e);
+            throw new AccountEntityFacadeStorageException(e.getMessage());
         }
 
         em.close();
@@ -77,7 +82,7 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
             AccountEntityFacadeIllegalArgumentException {
         EntityManager em = EMF.getEntityManager();
         em.getTransaction().begin();
-
+        
         try {
             AccountDB account = em.find(AccountDB.class, id); //, LockModeType.PESSIMISTIC_WRITE);
             if (account == null) {
@@ -91,10 +96,10 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
         } catch (IllegalArgumentException e) {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Account not found",
                     String.format("account with id '%d' was not found", id));
-            throw new AccountEntityFacadeIllegalArgumentException("Account not found", e);
+            throw new AccountEntityFacadeIllegalArgumentException("Account not found");
         } catch (Exception e) {
             logger.log(e);
-            throw new AccountEntityFacadeStorageException("Couldn't save credit", e);
+            throw new AccountEntityFacadeStorageException("Couldn't save credit");
         } finally {
             if (em.getTransaction().isActive()) {
                 em.flush();
@@ -126,10 +131,12 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
             account.setHoldings(holdings - amount);
             em.getTransaction().commit();
 
+        } catch (AccountEntityFacadeInsufficientHoldingsException e) {
+            throw e;
         } catch (IllegalArgumentException e) {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Account not found",
                     String.format("Account with id '%d' was not found", id));
-            throw new AccountEntityFacadeIllegalArgumentException("Account not found" ,e);
+            throw new AccountEntityFacadeIllegalArgumentException("Account not found");
         } finally {
             if (em.getTransaction().isActive()) {
                 em.flush();
@@ -139,15 +146,15 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
     }
 
     @Override
-    public Account findById(long account)
+    public Account findById(long account_id)
             throws
             AccountEntityFacadeIllegalArgumentException {
         EntityManager em = EMF.getEntityManager();
         try {
-            return em.find(AccountDB.class, account);
+            return em.find(AccountDB.class, account_id);
         } catch (Exception e) {
             logger.log(e);
-            throw new AccountEntityFacadeIllegalArgumentException(e);
+            throw new AccountEntityFacadeIllegalArgumentException(e.getMessage());
         } finally {
             em.close();
         }

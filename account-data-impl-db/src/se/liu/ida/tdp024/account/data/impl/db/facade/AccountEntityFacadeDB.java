@@ -129,7 +129,7 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
         } catch (IllegalArgumentException e) {
             logger.log(AccountLogger.AccountLoggerLevel.WARNING, "Account not found",
                     String.format("Account with id '%d' was not found", id));
-            throw new AccountEntityFacadeIllegalArgumentException("Account not found" ,e);
+            throw new AccountEntityFacadeIllegalArgumentException("Account not found", e);
         } finally {
             if (em.getTransaction().isActive()) {
                 em.flush();

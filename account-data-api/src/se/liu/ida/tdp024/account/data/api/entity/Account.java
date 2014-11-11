@@ -25,9 +25,9 @@ public interface Account extends Serializable {
     long getId();
 
     List<Transaction> getTransactions();
-    
+
     void setTransactions(List<Transaction> transactions);
-    
+
     void addTransaction(Transaction transaction);
 
     String getAccountType();

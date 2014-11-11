@@ -16,19 +16,20 @@ public class AccountDB implements Account {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private long holdings;
-    
-    @OneToMany(mappedBy= "account", targetEntity=TransactionDB.class)
+
+    @OneToMany(mappedBy = "account", targetEntity = TransactionDB.class)
     private List<Transaction> transactions;
-    
+
     @Override
     public void setTransactions(List<Transaction> transactions) {
         this.transactions = transactions;
     }
+
     @Override
     public void addTransaction(Transaction transaction) {
         transactions.add(transaction);
     }
-    
+
     @Override
     public List<Transaction> getTransactions() {
         return transactions;

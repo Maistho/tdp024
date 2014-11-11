@@ -26,7 +26,6 @@ public interface TransactionLogicFacade {
             super(e);
         }
     }
-    
 
     void debit(long account, long amount)
             throws

@@ -180,7 +180,7 @@ public class AccountEntityFacadeTest {
         try {
             //Test nonexisting account
 
-             accountEntityFacade.debit(-1, 10);
+            accountEntityFacade.debit(-1, 10);
             Assert.fail("No exception");
         } catch (AccountEntityFacade.AccountEntityFacadeStorageException ex) {
             Assert.fail("Wrong exception");

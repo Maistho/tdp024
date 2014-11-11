@@ -10,10 +10,11 @@ package se.liu.ida.tdp024.account.data.api.util;
  * @author maistho
  */
 public interface FinalConstants {
+
     public enum TransactionTypes {
+
         DEBIT,
         CREDIT
     }
-
 
 }

@@ -10,64 +10,61 @@ import se.liu.ida.tdp024.account.xfinal.test.util.AccountDTO;
 import se.liu.ida.tdp024.account.xfinal.test.util.FinalConstants;
 
 public class AccountFindTest {
-    
+
     private static final HTTPHelper httpHelper = new HTTPHelperImpl();
     private static final AccountJsonSerializer jsonSerializer = new AccountJsonSerializerImpl();
-    
-    
-    
+
     @Test
     public void testFind() {
         try {
-        {
-            String name = "Marcus Bendtsen";
-            String bank = "SWEDBANK";
-            String accountType = "SAVINGS";
-            String response = httpHelper.get(FinalConstants.ENDPOINT + "account/create/", "name", name, "bank", bank, "accounttype", accountType);
-            Assert.assertEquals("OK", response);
-        }
-        {
-            String name = "Marcus Bendtsen";
-            String bank = "NORDEA";
-            String accountType = "SAVINGS";
-            String response = httpHelper.get(FinalConstants.ENDPOINT + "account/create/", "name", name, "bank", bank, "accounttype", accountType);
-            Assert.assertEquals("OK", response);
-        }
-        {
-            String name = "Marcus Bendtsen";
-            String bank = "JPMORGAN";
-            String accountType = "CHECK";
-            String response = httpHelper.get(FinalConstants.ENDPOINT + "account/create/", "name", name, "bank", bank, "accounttype", accountType);
-            Assert.assertEquals("OK", response);
-        }
-        
-        
-        String json = httpHelper.get(FinalConstants.ENDPOINT + "account/find/name", "name", "Marcus Bendtsen");
-        AccountDTO[] accountDTos = jsonSerializer.fromJson(json, AccountDTO[].class);
-        
-        Assert.assertTrue(accountDTos.length > 2);
-        
+            {
+                String name = "Marcus Bendtsen";
+                String bank = "SWEDBANK";
+                String accountType = "SAVINGS";
+                String response = httpHelper.get(FinalConstants.ENDPOINT + "account/create/", "name", name, "bank", bank, "accounttype", accountType);
+                Assert.assertEquals("OK", response);
+            }
+            {
+                String name = "Marcus Bendtsen";
+                String bank = "NORDEA";
+                String accountType = "SAVINGS";
+                String response = httpHelper.get(FinalConstants.ENDPOINT + "account/create/", "name", name, "bank", bank, "accounttype", accountType);
+                Assert.assertEquals("OK", response);
+            }
+            {
+                String name = "Marcus Bendtsen";
+                String bank = "JPMORGAN";
+                String accountType = "CHECK";
+                String response = httpHelper.get(FinalConstants.ENDPOINT + "account/create/", "name", name, "bank", bank, "accounttype", accountType);
+                Assert.assertEquals("OK", response);
+            }
+
+            String json = httpHelper.get(FinalConstants.ENDPOINT + "account/find/name", "name", "Marcus Bendtsen");
+            AccountDTO[] accountDTos = jsonSerializer.fromJson(json, AccountDTO[].class);
+
+            Assert.assertTrue(accountDTos.length > 2);
+
         } catch (HTTPHelper.HTTPHelperConnectionException e) {
-            
+
         } catch (HTTPHelper.HTTPHelperMalformedURLException e) {
-            
+
         }
-        
+
     }
-    
+
     @Test
     public void testFindFailure() {
         try {
-        
-        String json = httpHelper.get(FinalConstants.ENDPOINT + "account/find/name", "name", "Marcus");
-        
-        Assert.assertEquals("[]", json);
-                } catch (HTTPHelper.HTTPHelperConnectionException e) {
-            
+
+            String json = httpHelper.get(FinalConstants.ENDPOINT + "account/find/name", "name", "Marcus");
+
+            Assert.assertEquals("[]", json);
+        } catch (HTTPHelper.HTTPHelperConnectionException e) {
+
         } catch (HTTPHelper.HTTPHelperMalformedURLException e) {
-            
+
         }
-        
+
     }
-    
+
 }

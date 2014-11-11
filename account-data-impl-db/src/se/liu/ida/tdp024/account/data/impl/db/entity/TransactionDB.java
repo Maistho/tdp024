@@ -69,7 +69,7 @@ public class TransactionDB implements Transaction {
 
     @Override
     public Date getCreated() {
-        return created;
+        return new Date(created.getTime());
     }
 
     @Override

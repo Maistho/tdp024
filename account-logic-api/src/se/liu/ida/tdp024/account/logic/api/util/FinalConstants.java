@@ -10,6 +10,6 @@ package se.liu.ida.tdp024.account.logic.api.util;
  * @author maistho
  */
 public interface FinalConstants {
-    public static final String BANK_ENDPOINT = "http://enterprise-systems.appspot.com/bank/";
-    public static final String PERSON_ENDPOINT = "http://enterprise-systems.appspot.com/person/";
+    static final String BANK_ENDPOINT = "http://enterprise-systems.appspot.com/bank/";
+    static final String PERSON_ENDPOINT = "http://enterprise-systems.appspot.com/person/";
 }

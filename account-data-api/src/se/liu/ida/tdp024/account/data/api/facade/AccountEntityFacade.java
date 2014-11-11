@@ -16,7 +16,7 @@ public interface AccountEntityFacade {
         }
         
         public AccountEntityFacadeIllegalArgumentException(String message, Exception e) {
-            super(e);
+            super(message, e);
         }
     }
 

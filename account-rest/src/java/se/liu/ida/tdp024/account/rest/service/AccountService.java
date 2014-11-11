@@ -68,7 +68,7 @@ public class AccountService {
         try {
             accountLogicFacade.create(accounttype, name, bank);
             logger.log(AccountLogger.AccountLoggerLevel.INFO, "Created new account",
-                    String.format("New Account with:\nAccountType: %s%nName: %s\nBank: %s", accounttype, name, bank));
+                    String.format("New Account with:%nAccountType: %s%nName: %s\nBank: %s", accounttype, name, bank));
             return Response.ok().entity("OK").build();
 
         } catch (AccountLogicFacadeIllegalArgumentException e) {
